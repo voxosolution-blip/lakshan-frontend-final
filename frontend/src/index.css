@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+  }
+  
+  .font-sinhala {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+  }
+}
+
+/* Print Styles */
+@media print {
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+  
+  /* Hide everything by default */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Show only the paysheet container and its children */
+  .paysheet-print,
+  .paysheet-print * {
+    visibility: visible !important;
+  }
+  
+  /* Hide all system UI elements completely */
+  body,
+  html {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Hide sidebar, header, footer, navigation, buttons */
+  aside,
+  header,
+  footer,
+  nav,
+  button,
+  [class*="Sidebar"],
+  [class*="Header"],
+  [class*="Footer"],
+  [class*="MainLayout"],
+  .fixed,
+  .print\\:hidden,
+  .flex.h-screen > aside,
+  .flex.h-screen > div > header,
+  .flex.h-screen > div > footer,
+  .flex.h-screen > div > main > div:not(.paysheet-print) {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  /* Hide main layout containers except paysheet */
+  .flex.h-screen,
+  .bg-gray-50,
+  .bg-gradient-to-r,
+  .bg-gradient-to-b,
+  main > div:not(.paysheet-print),
+  [class*="ml-64"] {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Show only paysheet content - positioned at top of page */
+  .paysheet-print {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: avoid !important;
+  }
+  
+  /* Hide action buttons inside paysheet container */
+  .paysheet-print > .print\\:hidden {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
+  .paysheet-print .print\\:p-12 {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .paysheet-print .print\\:shadow-none {
+    box-shadow: none !important;
+  }
+  
+  /* Ensure background images print (for logo watermark) */
+  .paysheet-print * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  
+  /* Remove spacing from print */
+  .paysheet-print .space-y-6 > * + * {
+    margin-top: 0 !important;
+  }
+  
+  /* Ensure main content area doesn't interfere */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+}
+
+
