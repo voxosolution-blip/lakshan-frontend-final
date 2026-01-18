@@ -764,7 +764,7 @@ export const ShopDetailsPage = ({ shopId, onBack }: ShopDetailsPageProps) => {
                   <div className="text-center">
                     <h3 className="text-base font-semibold text-gray-900 mb-2">{product.name}</h3>
                     <p className="text-2xl font-bold text-primary-700">
-                      {parseFloat(product.stock || 0).toFixed(2)}
+                      {parseFloat(String(product.stock || 0)).toFixed(2)}
                     </p>
                     <p className="text-sm text-gray-600 mt-1">{product.unit || 'piece'}</p>
                   </div>
