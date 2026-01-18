@@ -87,15 +87,12 @@ Before deploying, click **"Show advanced"** → **"New variable"** and add:
 
 ```
 Variable name: VITE_API_URL
-Value: [Your production API URL]
+Value: https://lakshan-backend-final-production.up.railway.app/api
 ```
 
-**Example:**
-```
-VITE_API_URL=https://your-backend-api.com/api
-```
+✅ **Your Railway Backend URL is configured:** `lakshan-backend-final-production.up.railway.app`
 
-⚠️ **Important:** Replace `[Your production API URL]` with your actual backend API URL.
+⚠️ **Important:** Make sure your Railway backend has CORS configured to allow requests from your Netlify domain.
 
 #### Step 5: Deploy
 
@@ -153,7 +150,11 @@ The frontend uses `VITE_API_URL` environment variable to connect to your backend
 **For Netlify:**
 - Set this as an environment variable in Netlify dashboard
 - Go to: Site settings → Build & deploy → Environment variables
-- Add: `VITE_API_URL` = `https://your-api-domain.com/api`
+- Add: `VITE_API_URL` = `https://lakshan-backend-final-production.up.railway.app/api`
+
+**Your Railway Backend:**
+- Domain: `lakshan-backend-final-production.up.railway.app`
+- Full API URL: `https://lakshan-backend-final-production.up.railway.app/api`
 
 ### 2. Single Page Application (SPA) Routing
 
@@ -246,9 +247,16 @@ Once deployed, your frontend will be live at your Netlify URL!
 
 **Next Steps:**
 1. Share the Netlify URL with your team
-2. Update your backend CORS settings to allow the Netlify domain
+2. **IMPORTANT:** Update your Railway backend CORS settings to allow requests from your Netlify domain
+   - Add your Netlify URL (e.g., `https://your-site.netlify.app`) to your backend's allowed origins
+   - This is required for the frontend to communicate with the Railway backend
 3. Monitor the site for any errors or issues
 4. Set up continuous deployment (automatic deploys on git push)
+
+**Backend CORS Configuration:**
+Your Railway backend at `lakshan-backend-final-production.up.railway.app` needs to allow your Netlify frontend domain in its CORS configuration. Common CORS settings:
+- `Access-Control-Allow-Origin: https://your-netlify-site.netlify.app`
+- Or use `*` for development (not recommended for production)
 
 ---
 
