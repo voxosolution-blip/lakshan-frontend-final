@@ -48,3 +48,4 @@ origin: '*'
 
 Without proper CORS configuration, your frontend will not be able to make API requests to the Railway backend.
 
+
