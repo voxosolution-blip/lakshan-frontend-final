@@ -47,18 +47,30 @@ export const MainLayout = () => {
             opacity: 0.1,
           }}
         />
-        {/* Header - Fixed at top, doesn't scroll */}
-        <div className="flex-shrink-0 relative z-20">
+        {/* Header - Fixed at top, always visible */}
+        <div className="fixed top-0 left-0 right-0 z-30" style={{ 
+          marginLeft: isMobile ? '0' : '256px' 
+        }}>
           <Header />
         </div>
         {/* Main Content - Scrollable, with padding to avoid header/footer */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 md:p-6 relative z-10 min-h-0">
-          <div className="w-full max-w-7xl mx-auto">
+        <main 
+          className="flex-1 overflow-y-auto overflow-x-hidden relative z-10"
+          style={{
+            paddingTop: '70px', // Header height
+            paddingBottom: '60px', // Footer height
+            paddingLeft: '12px',
+            paddingRight: '12px',
+          }}
+        >
+          <div className="w-full max-w-7xl mx-auto py-3 sm:py-4 md:py-6">
             <Outlet />
           </div>
         </main>
-        {/* Footer - Fixed at bottom, doesn't scroll */}
-        <div className="flex-shrink-0 relative z-20">
+        {/* Footer - Fixed at bottom, always visible */}
+        <div className="fixed bottom-0 left-0 right-0 z-30" style={{ 
+          marginLeft: isMobile ? '0' : '256px' 
+        }}>
           <Footer />
         </div>
       </div>
