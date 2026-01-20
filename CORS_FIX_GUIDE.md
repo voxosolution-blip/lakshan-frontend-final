@@ -140,3 +140,6 @@ The error says "Invalid credentials". Try:
 **The frontend is deployed correctly! The issue is backend CORS configuration.**
 
 
+
+
+
