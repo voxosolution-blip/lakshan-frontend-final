@@ -151,7 +151,8 @@ export const Sidebar = () => {
       {isMobile && (
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="fixed top-4 left-4 z-50 p-2 bg-primary-600 text-white rounded-lg shadow-lg hover:bg-primary-700 transition-colors"
+          className="fixed top-[15px] left-4 z-[60] p-2.5 bg-primary-600 text-white rounded-xl shadow-xl hover:bg-primary-700 active:bg-primary-800 transition-all duration-200 touch-manipulation"
+          aria-label="Open menu"
         >
           <Bars3Icon className="w-6 h-6" />
         </button>

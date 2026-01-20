@@ -1973,16 +1973,10 @@ export const SalespersonDashboard = () => {
                           </span>
                         </div>
                         
-                        {/* Quantity Row */}
-                        <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100">
-                          <span className="text-xs text-gray-600 font-medium">Quantity</span>
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => updateItemQuantity(item.productId, -1)}
-                              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center touch-manipulation active:bg-gray-200"
-                            >
-                              <Minus className="w-4 h-4" />
-                            </button>
+                        {/* Quantity & Price Row - Combined */}
+                        <div className="grid grid-cols-2 gap-3 mb-3 pb-3 border-b-2 border-gray-200">
+                          <div>
+                            <span className="text-xs text-gray-600 font-semibold block mb-1.5">Quantity</span>
                             <input
                               type="number"
                               step="1"
@@ -1991,41 +1985,30 @@ export const SalespersonDashboard = () => {
                               value={item.quantity || ''}
                               onChange={(e) => {
                                 const val = e.target.value === '' ? 0 : parseInt(e.target.value);
-                                if (!isNaN(val) && val >= 0) {
+                                if (!isNaN(val) && val >= 0 && val <= (item.maxQuantity || 0)) {
                                   updateItemQuantityDirect(item.productId, val);
                                 }
                               }}
                               onFocus={(e) => e.target.select()}
-                              className="w-16 h-8 text-center border border-gray-300 rounded-lg text-sm font-medium touch-manipulation"
+                              className="w-full px-3 py-2.5 text-center border-2 border-gray-300 rounded-xl text-base font-semibold touch-manipulation min-h-[44px] bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                               placeholder="0"
                             />
-                            <button
-                              onClick={() => updateItemQuantity(item.productId, 1)}
-                              disabled={item.quantity >= (item.maxQuantity || 0)}
-                              className={`w-8 h-8 rounded-full flex items-center justify-center touch-manipulation ${
-                                item.quantity >= (item.maxQuantity || 0)
-                                  ? 'bg-gray-100 opacity-50'
-                                  : 'bg-primary-100 text-primary-600 active:bg-primary-200'
-                              }`}
-                            >
-                              <Plus className="w-4 h-4" />
-                            </button>
+                            <p className="text-xs text-gray-500 mt-1 text-center">Max: {item.maxQuantity || 0}</p>
                           </div>
-                        </div>
-                        
-                        {/* Price Row */}
-                        <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100">
-                          <span className="text-xs text-gray-600 font-medium">Price/Unit</span>
-                          <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            value={item.pricePerUnit || ''}
-                            onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
-                            onFocus={(e) => e.target.select()}
-                            className="w-24 h-8 text-right border border-gray-300 rounded-lg text-sm px-2 touch-manipulation"
-                            placeholder="Price"
-                          />
+                          <div>
+                            <span className="text-xs text-gray-600 font-semibold block mb-1.5">Price/Unit</span>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              value={item.pricePerUnit || ''}
+                              onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
+                              onFocus={(e) => e.target.select()}
+                              className="w-full px-3 py-2.5 text-right border-2 border-gray-300 rounded-xl text-base font-semibold touch-manipulation min-h-[44px] bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                              placeholder="0.00"
+                            />
+                            <p className="text-xs text-gray-500 mt-1 text-right">Rs.</p>
+                          </div>
                         </div>
                         
                         {/* Returns & Free Issue Row */}
@@ -2070,13 +2053,12 @@ export const SalespersonDashboard = () => {
                   
                   {/* Desktop Table View */}
                   <table className="w-full hidden sm:table">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                    <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Item Name</th>
-                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
-                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Price/Unit</th>
-                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Total Price</th>
-                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Returns</th>
+                        <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Item Name</th>
+                        <th className="px-4 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Qty / Price</th>
+                        <th className="px-4 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Total Price</th>
+                        <th className="px-4 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Returns</th>
                         <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Free Issue</th>
                       </tr>
                     </thead>
@@ -2084,14 +2066,8 @@ export const SalespersonDashboard = () => {
                       {shopItems.map((item) => (
                         <tr key={item.productId} className="hover:bg-gray-50">
                           <td className="px-4 py-3 text-sm text-gray-900">{item.productName}</td>
-                          <td className="px-4 py-3 text-sm text-gray-600 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => updateItemQuantity(item.productId, -1)}
-                                className="p-1 rounded hover:bg-gray-200 transition-colors touch-manipulation"
-                              >
-                                <Minus className="w-4 h-4" />
-                              </button>
+                          <td className="px-4 py-3">
+                            <div className="grid grid-cols-2 gap-2">
                               <input
                                 type="number"
                                 step="1"
@@ -2100,38 +2076,26 @@ export const SalespersonDashboard = () => {
                                 value={item.quantity || ''}
                                 onChange={(e) => {
                                   const val = e.target.value === '' ? 0 : parseInt(e.target.value);
-                                  if (!isNaN(val) && val >= 0) {
+                                  if (!isNaN(val) && val >= 0 && val <= (item.maxQuantity || 0)) {
                                     updateItemQuantityDirect(item.productId, val);
                                   }
                                 }}
                                 onFocus={(e) => e.target.select()}
-                                className="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                placeholder="0"
+                                className="w-full px-2 py-1.5 text-sm border-2 border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium"
+                                placeholder="Qty"
+                                title={`Max: ${item.maxQuantity || 0}`}
                               />
-                              <button
-                                onClick={() => updateItemQuantity(item.productId, 1)}
-                                disabled={item.quantity >= (item.maxQuantity || 0)}
-                                className={`p-1 rounded transition-colors ${
-                                  item.quantity >= (item.maxQuantity || 0)
-                                    ? 'opacity-50 cursor-not-allowed bg-gray-100'
-                                    : 'hover:bg-gray-200'
-                                }`}
-                              >
-                                <Plus className="w-4 h-4" />
-                              </button>
+                              <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={item.pricePerUnit || ''}
+                                onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
+                                onFocus={(e) => e.target.select()}
+                                className="w-full px-2 py-1.5 text-sm border-2 border-gray-300 rounded-lg text-right focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium"
+                                placeholder="Price"
+                              />
                             </div>
-                          </td>
-                          <td className="px-4 py-3 text-sm text-gray-600 text-right">
-                            <input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              value={item.pricePerUnit || ''}
-                              onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
-                              onFocus={(e) => e.target.select()}
-                              className="w-24 px-2 py-1 text-sm border border-gray-300 rounded text-right focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                              placeholder="Price"
-                            />
                           </td>
                           <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
                             {formatCurrencySimple((item.quantity || 0) * (item.pricePerUnit || 0))}
@@ -2164,9 +2128,9 @@ export const SalespersonDashboard = () => {
                         </tr>
                       ))}
                       <tr className="bg-gray-50 font-semibold">
-                        <td colSpan={3} className="px-4 py-3 text-sm text-gray-900">Subtotal</td>
+                        <td colSpan={2} className="px-4 py-3 text-sm text-gray-900">Subtotal</td>
                         <td className="px-4 py-3 text-sm text-gray-900 text-right">{formatCurrencySimple(calculateSubtotal())}</td>
-                        <td colSpan={2} className="px-4 py-3"></td>
+                        <td className="px-4 py-3"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -2447,23 +2411,23 @@ export const SalespersonDashboard = () => {
       {showBillModal && billData && (() => {
         const t = BILL_LABELS[billLang];
         return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-white rounded-lg w-full max-w-sm max-h-[95vh] overflow-y-auto shadow-xl">
-            {/* Action Buttons - Top with system colors */}
-            <div className="flex gap-2 p-3 border-b border-gray-200 bg-primary-50 print:hidden sticky top-0">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-0 sm:p-4">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-sm h-full sm:h-auto sm:max-h-[95vh] overflow-y-auto shadow-2xl flex flex-col">
+            {/* Action Buttons - Top with system colors - Mobile optimized */}
+            <div className="flex flex-wrap gap-2 p-3 sm:p-4 border-b-2 border-gray-200 bg-gradient-to-r from-primary-50 to-primary-100 print:hidden sticky top-0 z-10 flex-shrink-0">
               <button
                 onClick={() => setBillLang(billLang === 'EN' ? 'SI' : 'EN')}
-                className="btn-secondary px-3 py-2 text-sm"
+                className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-700 border-2 border-gray-300 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md"
               >
                 {t.language}
               </button>
               {billData.saleId && (
                 <button
                   onClick={() => setShowReversePasswordModal(true)}
-                  className="btn-secondary px-3 py-2 text-sm bg-red-600 hover:bg-red-700 text-white"
+                  className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-red-600 hover:bg-red-700 active:bg-red-800 text-white border-2 border-red-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md flex items-center justify-center gap-1.5"
                 >
-                  <AlertTriangle className="w-4 h-4 inline mr-1" />
-                  Reverse
+                  <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span>Reverse</span>
                 </button>
               )}
               <button
@@ -2471,7 +2435,7 @@ export const SalespersonDashboard = () => {
                   setShowBillModal(false);
                   setBillData(null);
                 }}
-                className="btn-secondary flex-1 py-2 text-sm"
+                className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-gray-600 hover:bg-gray-700 active:bg-gray-800 text-white border-2 border-gray-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md"
               >
                 {t.close}
               </button>
@@ -2541,7 +2505,7 @@ export const SalespersonDashboard = () => {
                     }
                   }
                 }}
-                className="btn-primary flex-1 py-2 flex items-center justify-center gap-1 text-sm"
+                className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white border-2 border-primary-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
               >
                 <Printer className="w-4 h-4" />
                 {t.print}
@@ -2549,7 +2513,8 @@ export const SalespersonDashboard = () => {
             </div>
 
             {/* Print-friendly bill content - 80mm optimized with system colors */}
-            <div id="printable-bill" className={`p-3 bg-white ${billLang === 'SI' ? 'font-sinhala' : ''}`} style={{ maxWidth: '80mm' }}>
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4">
+              <div id="printable-bill" className={`p-3 bg-white mx-auto ${billLang === 'SI' ? 'font-sinhala' : ''}`} style={{ maxWidth: '80mm' }}>
               {/* Header with Logo */}
               <div className="header text-center border-b-2 border-dashed border-primary-500 pb-3 mb-3">
                 <img src={logoImage} alt="Logo" className="logo w-12 h-12 mx-auto mb-1" />
@@ -2727,6 +2692,7 @@ export const SalespersonDashboard = () => {
                   <p className="text-xs text-gray-400 mt-1">© 2026 VOXOsolution All rights reserved</p>
                 </div>
               </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2735,8 +2701,8 @@ export const SalespersonDashboard = () => {
 
       {/* Reverse Password Modal */}
       {showReversePasswordModal && billData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[110] p-3 sm:p-4">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full shadow-2xl">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="w-8 h-8 text-red-600" />
               <h2 className="text-xl font-bold text-gray-800">Reverse Bill</h2>
@@ -2779,21 +2745,21 @@ export const SalespersonDashboard = () => {
                 autoFocus
               />
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button
                 onClick={() => {
                   setShowReversePasswordModal(false);
                   setReversePassword('');
                   setReverseReason('');
                 }}
-                className="btn-secondary flex-1 py-2"
+                className="flex-1 px-4 py-3 sm:py-2.5 text-sm sm:text-base font-semibold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] shadow-sm hover:shadow-md"
                 disabled={reversingSale}
               >
                 Cancel
               </button>
               <button
                 onClick={handleReverseSale}
-                className="btn-primary flex-1 py-2 bg-red-600 hover:bg-red-700 text-white"
+                className="flex-1 px-4 py-3 sm:py-2.5 text-sm sm:text-base font-semibold bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={reversingSale || !reversePassword}
               >
                 {reversingSale ? 'Reversing...' : 'Reverse Bill'}
