@@ -32,7 +32,7 @@ export const MainLayout = () => {
         {/* Lottie Animation - Bottom Left Corner */}
         <LottieAnimation />
         
-        {/* Background Logo Overlay - 50% opacity, centered in main content area */}
+        {/* Background Logo Overlay - 10% opacity, centered in main content area */}
         <div 
           className="absolute z-0 pointer-events-none hidden md:block"
           style={{
@@ -44,14 +44,23 @@ export const MainLayout = () => {
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            opacity: 0.5,
+            opacity: 0.1,
           }}
         />
-        <Header />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 relative z-10">
-          <Outlet />
+        {/* Header - Fixed at top, doesn't scroll */}
+        <div className="flex-shrink-0 relative z-20">
+          <Header />
+        </div>
+        {/* Main Content - Scrollable, with padding to avoid header/footer */}
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 relative z-10 min-h-0">
+          <div className="w-full max-w-7xl mx-auto">
+            <Outlet />
+          </div>
         </main>
-        <Footer />
+        {/* Footer - Fixed at bottom, doesn't scroll */}
+        <div className="flex-shrink-0 relative z-20">
+          <Footer />
+        </div>
       </div>
     </div>
   );

@@ -64,29 +64,28 @@ import { adminAPI } from '../../services/adminAPI';
   }, [showSettings]);
   
     return (
-    <footer ref={footerRef as any} className="bg-primary-900 border-t border-primary-700">
-        <div className="max-w-7xl mx-auto px-3 py-1">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+    <footer ref={footerRef as any} className="bg-primary-900 border-t border-primary-700 relative z-20">
+        <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 py-2 sm:py-2.5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
   
-            {/* Left - Copyright */}
-            <div className="text-primary-300 text-center md:text-left">
+            {/* Left - Copyright - Mobile compact */}
+            <div className="text-primary-300 text-center sm:text-left order-2 sm:order-1">
               © {new Date().getFullYear()}{' '}
               <span className="font-semibold text-white">
                 VOXOsolution
-              </span>{' '}
-              All rights reserved
+              </span>
             </div>
   
-            {/* Center - Contact Icons Only */}
-            <div className="flex items-center gap-6">
+            {/* Center - Contact Icons Only - Mobile first */}
+            <div className="flex items-center gap-3 sm:gap-4 md:gap-6 order-1 sm:order-2">
   
               {/* Email Icon */}
               <a
                 href={`mailto:${email}`}
-                className="p-2 rounded-full text-primary-300 hover:text-white hover:bg-primary-800 transition-all"
+                className="p-1.5 sm:p-2 rounded-xl text-primary-300 hover:text-white hover:bg-primary-800 transition-all border border-transparent hover:border-primary-700 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
                 title="Send Email"
               >
-                <EnvelopeIcon className="w-5 h-5" />
+                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
 
               {/* Settings Icon - Admin Only */}
@@ -94,10 +93,10 @@ import { adminAPI } from '../../services/adminAPI';
                 <button
                   type="button"
                   onClick={() => setShowSettings(true)}
-                  className="p-2 rounded-full text-primary-300 hover:text-white hover:bg-primary-800 transition-all"
+                  className="p-1.5 sm:p-2 rounded-xl text-primary-300 hover:text-white hover:bg-primary-800 transition-all border border-transparent hover:border-primary-700 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
                   title="Settings"
                 >
-                  <Cog6ToothIcon className="w-5 h-5" />
+                  <Cog6ToothIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               )}
   
@@ -106,20 +105,21 @@ import { adminAPI } from '../../services/adminAPI';
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full text-primary-300 hover:text-white hover:bg-primary-800 transition-all"
+                className="p-1.5 sm:p-2 rounded-xl text-primary-300 hover:text-white hover:bg-primary-800 transition-all border border-transparent hover:border-primary-700 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
                 title="Chat on WhatsApp"
               >
-                <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
   
             </div>
   
-            {/* Right - Branding */}
-            <div className="text-primary-400 text-center md:text-right">
-              Powered by{' '}
+            {/* Right - Branding - Mobile compact */}
+            <div className="text-primary-400 text-center sm:text-right order-3 text-xs sm:text-sm">
+              <span className="hidden sm:inline">Powered by </span>
               <span className="font-medium text-primary-200">
                 VOXOsolution
               </span>
+              <span className="hidden md:inline"> Enterprise ERP v2.0</span>
             </div>
   
           </div>

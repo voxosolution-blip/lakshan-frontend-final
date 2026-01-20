@@ -1290,23 +1290,23 @@ export const SalespersonDashboard = () => {
           const hasNext = currentPaymentIndex < filteredPayments.length - 1;
 
           return (
-            <div className="p-2 sm:p-4">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
-                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-orange-500" />
+            <div className="p-3 sm:p-4">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
+                  <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
                     Ongoing Pending Payments
                   </h2>
                   {cities.length > 0 && (
-                    <div className="flex items-center gap-2">
-                      <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Filter by City:</label>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <label className="text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap flex items-center">Filter by City:</label>
                 <select
                         value={selectedCity}
                         onChange={(e) => {
                           setSelectedCity(e.target.value);
                           setCurrentPaymentIndex(0); // Reset to first payment when city changes
                         }}
-                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                        className="px-3 sm:px-4 py-2.5 sm:py-2 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base font-medium touch-manipulation min-h-[44px] bg-white"
                 >
                         <option value="">All Cities</option>
                         {cities.map(city => (
@@ -1318,41 +1318,43 @@ export const SalespersonDashboard = () => {
                 </div>
 
                 {currentPayment ? (
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                    <div className="flex flex-col gap-4">
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 rounded-xl p-4 sm:p-5">
+                    <div className="flex flex-col gap-4 sm:gap-5">
                       {/* Shop Info */}
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Store className="w-5 h-5 text-orange-600" />
-                          <h3 className="text-lg font-semibold text-gray-900">
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                          <div className="p-1.5 sm:p-2 bg-orange-200 rounded-lg">
+                            <Store className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
+                          </div>
+                          <h3 className="text-base sm:text-lg font-bold text-gray-900">
                             {currentPayment.shopName || 'Unknown Shop'}
                           </h3>
                         </div>
                         {currentPayment.address && (
-                          <p className="text-sm text-gray-600 mb-3">{currentPayment.address}</p>
+                          <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 break-words">{currentPayment.address}</p>
                         )}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-                          <div>
-                            <span className="text-gray-500">Date:</span>
-                            <div className="font-medium text-gray-900">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                          <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200">
+                            <span className="text-xs text-gray-500 block mb-1">Date:</span>
+                            <div className="font-semibold text-sm sm:text-base text-gray-900">
                               {new Date(currentPayment.saleDate).toLocaleDateString()}
                             </div>
                           </div>
-                          <div>
-                            <span className="text-gray-500">Total:</span>
-                            <div className="font-semibold text-gray-900">
+                          <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200">
+                            <span className="text-xs text-gray-500 block mb-1">Total:</span>
+                            <div className="font-bold text-sm sm:text-base text-gray-900">
                               {formatCurrencySimple(currentPayment.totalAmount)}
                             </div>
                           </div>
-                          <div>
-                            <span className="text-gray-500">Paid:</span>
-                            <div className="font-semibold text-gray-900">
+                          <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200">
+                            <span className="text-xs text-gray-500 block mb-1">Paid:</span>
+                            <div className="font-bold text-sm sm:text-base text-gray-900">
                               {formatCurrencySimple(currentPayment.totalPaid)}
                             </div>
                           </div>
-                          <div>
-                            <span className="text-gray-500">Remaining:</span>
-                            <div className="font-semibold text-orange-600">
+                          <div className="bg-white rounded-lg p-2 sm:p-3 border-2 border-orange-300">
+                            <span className="text-xs text-gray-500 block mb-1">Remaining:</span>
+                            <div className="font-bold text-sm sm:text-base text-orange-600">
                               {formatCurrencySimple(currentPayment.remainingBalance)}
                             </div>
                           </div>
@@ -1360,33 +1362,33 @@ export const SalespersonDashboard = () => {
             </div>
 
                       {/* Navigation and Action Buttons */}
-                      <div className="flex items-center justify-between gap-4 pt-3 border-t border-orange-200">
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-4 border-t-2 border-orange-200">
                         {/* Navigation Arrows */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center gap-3 sm:gap-2">
                   <button
                             onClick={() => setCurrentPaymentIndex(prev => Math.max(0, prev - 1))}
                             disabled={!hasPrev}
-                            className={`p-2 rounded-lg transition-colors ${
+                            className={`p-2.5 sm:p-2 rounded-xl transition-all duration-200 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center ${
                               hasPrev
-                                ? 'bg-white border border-gray-300 hover:bg-gray-50 text-gray-700'
+                                ? 'bg-white border-2 border-gray-300 hover:bg-gray-50 active:bg-gray-100 text-gray-700 shadow-sm hover:shadow-md'
                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
                   >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4" />
                   </button>
-                          <span className="text-sm text-gray-600 min-w-[80px] text-center">
+                          <span className="text-sm sm:text-base font-semibold text-gray-700 min-w-[80px] text-center bg-white px-3 py-2 rounded-lg border border-gray-200">
                             {currentPaymentIndex + 1} / {filteredPayments.length}
                           </span>
                           <button
                             onClick={() => setCurrentPaymentIndex(prev => Math.min(filteredPayments.length - 1, prev + 1))}
                             disabled={!hasNext}
-                            className={`p-2 rounded-lg transition-colors ${
+                            className={`p-2.5 sm:p-2 rounded-xl transition-all duration-200 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center ${
                               hasNext
-                                ? 'bg-white border border-gray-300 hover:bg-gray-50 text-gray-700'
+                                ? 'bg-white border-2 border-gray-300 hover:bg-gray-50 active:bg-gray-100 text-gray-700 shadow-sm hover:shadow-md'
                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
                           >
-                            <ChevronRight className="w-5 h-5" />
+                            <ChevronRight className="w-5 h-5 sm:w-4 sm:h-4" />
                           </button>
                           </div>
 
@@ -1410,9 +1412,9 @@ export const SalespersonDashboard = () => {
                             }
                           }}
                           disabled={loadingSaleDetails}
-                          className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                          className="px-5 sm:px-4 py-3 sm:py-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 touch-manipulation min-h-[48px] text-base sm:text-sm"
                             >
-                          <DollarSign className="w-4 h-4" />
+                          <DollarSign className="w-5 h-5 sm:w-4 sm:h-4" />
                           {loadingSaleDetails ? 'Loading...' : 'Settle Payment'}
                             </button>
                           </div>
@@ -1429,17 +1431,17 @@ export const SalespersonDashboard = () => {
         })()}
 
         {/* Shop List Section */}
-        <div className="p-2 sm:p-4 space-y-3 sm:space-y-4">
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
           {/* Shop Search */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 value={shopSearchQuery}
                 onChange={(e) => setShopSearchQuery(e.target.value)}
                 placeholder="Search shops by name or city..."
-                className="w-full pl-10 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
+                className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
               />
                     </div>
                   </div>
@@ -1512,7 +1514,7 @@ export const SalespersonDashboard = () => {
       {/* Add Shop Modal */}
       {showShopModal && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-0 sm:p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowShopModal(false);
@@ -1522,7 +1524,7 @@ export const SalespersonDashboard = () => {
           }}
         >
           <div 
-            className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl mx-4"
+            className="bg-white rounded-t-2xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-md h-full sm:h-auto sm:max-h-[95vh] overflow-y-auto shadow-2xl mx-0 sm:mx-4 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -1694,7 +1696,7 @@ export const SalespersonDashboard = () => {
       {/* Shop Details Modal */}
       {showShopDetailsModal && selectedShop && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-0 sm:p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowShopDetailsModal(false);
@@ -1703,29 +1705,29 @@ export const SalespersonDashboard = () => {
             }
           }}
         >
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-2 sm:mx-0">
-            <div className="p-4 sm:p-6 border-b border-gray-200">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex-1 min-w-0 pr-2">
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">{selectedShop.shopName}</h2>
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-4xl w-full h-full sm:h-auto sm:max-h-[95vh] overflow-y-auto flex flex-col">
+            <div className="p-4 sm:p-6 border-b-2 border-gray-200 sticky top-0 bg-white z-10 flex-shrink-0">
+              <div className="flex justify-between items-start gap-3">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 break-words">{selectedShop.shopName}</h2>
                   {selectedShop.address && (
                     <p className="text-xs sm:text-sm text-gray-600 mt-1 break-words">{selectedShop.address}</p>
-      )}
-    </div>
+                  )}
+                </div>
                 <button
                   onClick={() => {
                     setShowShopDetailsModal(false);
                     setShowPaymentSection(false);
                     // Don't clear shopItems - they're saved in savedShopItems
                   }}
-                  className="text-gray-400 hover:text-gray-600 p-2 -mt-2 -mr-2 touch-manipulation flex-shrink-0"
+                  className="text-gray-400 hover:text-gray-600 p-2 touch-manipulation flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
             </div>
             
-            <div className="p-4 sm:p-6">
+            <div className="p-4 sm:p-6 flex-1 overflow-y-auto">
               {loadingShopDetails ? (
                 <div className="text-center py-8">
                   <div className="text-gray-500">Loading shop details...</div>
@@ -1769,12 +1771,12 @@ export const SalespersonDashboard = () => {
                   })()}
                   
                   {/* Payment Method Selector */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method:</label>
+                  <div className="mb-4 sm:mb-6">
+                    <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2 sm:mb-3">Payment Method:</label>
                     <select
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value as 'cash' | 'cheque' | 'split' | 'ongoing')}
-                      className="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-3 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base font-medium touch-manipulation min-h-[48px] bg-white"
                     >
                       <option value="cash">Cash</option>
                       <option value="cheque">Cheque</option>
@@ -1787,7 +1789,7 @@ export const SalespersonDashboard = () => {
                   <div className="mb-6 space-y-4">
                     {(paymentMethod === 'cash' || paymentMethod === 'split' || paymentMethod === 'ongoing') && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
                           Cash Amount {paymentMethod === 'ongoing' ? '(can be 0)' : '*'}
                         </label>
                         <input
@@ -1802,7 +1804,7 @@ export const SalespersonDashboard = () => {
                             }
                           }}
                           onFocus={(e) => e.target.select()}
-                          className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
+                          className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
                           placeholder={paymentMethod === 'ongoing' ? "Enter cash amount (0 or more)" : "Enter cash amount"}
                         />
                         {paymentMethod === 'ongoing' && (
@@ -1814,7 +1816,7 @@ export const SalespersonDashboard = () => {
                     {(paymentMethod === 'cheque' || paymentMethod === 'split') && (
                       <>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Cheque Amount *</label>
+                          <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Cheque Amount *</label>
                           <input
                             type="number"
                             step="0.01"
@@ -1827,41 +1829,41 @@ export const SalespersonDashboard = () => {
                               }
                             }}
                             onFocus={(e) => e.target.select()}
-                            className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
+                            className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
                             placeholder="Enter cheque amount"
                           />
                         </div>
                         {chequeAmount > 0 && (
                           <>
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Cheque Number *</label>
+                              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Cheque Number *</label>
                               <input
                                 type="text"
                                 value={chequeNumber}
                                 onChange={(e) => setChequeNumber(e.target.value)}
                                 onFocus={(e) => e.target.select()}
-                                className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
+                                className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
                                 placeholder="Enter cheque number"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Bank Name</label>
+                              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Bank Name</label>
                               <input
                                 type="text"
                                 value={chequeBank}
                                 onChange={(e) => setChequeBank(e.target.value)}
                                 onFocus={(e) => e.target.select()}
-                                className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
+                                className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
                                 placeholder="Enter bank name (optional)"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Cheque Expiry Date *</label>
+                              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Cheque Expiry Date *</label>
                               <input
                                 type="date"
                                 value={chequeExpiryDate}
                                 onChange={(e) => setChequeExpiryDate(e.target.value)}
-                                className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
+                                className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
                               />
                             </div>
                           </>
@@ -1870,16 +1872,17 @@ export const SalespersonDashboard = () => {
                     )}
                   </div>
                   
-                  <table className="w-full min-w-[640px] sm:min-w-0">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                      <tr>
-                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Item Name</th>
-                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
-                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Price/Unit</th>
-                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Total Price</th>
-                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Payment Method</th>
-                      </tr>
-                    </thead>
+                  <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                    <table className="w-full min-w-[640px] sm:min-w-0">
+                      <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                        <tr>
+                          <th className="px-3 sm:px-4 py-3 sm:py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Item Name</th>
+                          <th className="px-3 sm:px-4 py-3 sm:py-3.5 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Quantity</th>
+                          <th className="px-3 sm:px-4 py-3 sm:py-3.5 text-right text-xs font-bold text-gray-700 uppercase tracking-wider hidden sm:table-cell">Price/Unit</th>
+                          <th className="px-3 sm:px-4 py-3 sm:py-3.5 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Total Price</th>
+                          <th className="px-3 sm:px-4 py-3 sm:py-3.5 text-left text-xs font-bold text-gray-700 uppercase tracking-wider hidden md:table-cell">Payment Method</th>
+                        </tr>
+                      </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {shopItems.filter(item => item.quantity > 0).map((item) => (
                         <tr key={item.productId} className="hover:bg-gray-50">
@@ -1916,15 +1919,16 @@ export const SalespersonDashboard = () => {
                       </tr>
                     </tbody>
                   </table>
+                  </div>
                   
                   {/* Process Payment Button */}
-                  <div className="mt-4 sm:mt-6 flex justify-end">
+                  <div className="mt-4 sm:mt-6 flex justify-end sticky bottom-0 bg-white pt-4 pb-2 border-t-2 border-gray-100 -mx-4 sm:mx-0 px-4 sm:px-0">
                     <button
                       onClick={handleProcessPayment}
                       disabled={processingPayment}
-                      className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base touch-manipulation min-h-[44px] sm:min-h-0 w-full sm:w-auto justify-center sm:justify-start"
+                      className="flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 active:bg-primary-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-semibold text-base sm:text-lg touch-manipulation min-h-[52px] w-full sm:w-auto justify-center shadow-lg hover:shadow-xl active:scale-95"
                     >
-                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <CreditCard className="w-5 h-5 sm:w-6 sm:h-6" />
                       {processingPayment ? 'Processing...' : 'Process Payment'}
                     </button>
                   </div>
@@ -2188,7 +2192,7 @@ export const SalespersonDashboard = () => {
       {/* Settle Payment Modal */}
       {showSettlePaymentModal && selectedSaleForSettlement && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-3 sm:p-4"
                   onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowSettlePaymentModal(false);
@@ -2197,7 +2201,7 @@ export const SalespersonDashboard = () => {
             }
           }}
         >
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-start mb-4">
                 <div>
