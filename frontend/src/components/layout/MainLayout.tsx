@@ -21,9 +21,9 @@ export const MainLayout = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50">
       <Sidebar />
-      <div className={`flex-1 flex flex-col relative transition-all duration-300 ${
+      <div className={`flex-1 flex flex-col overflow-hidden relative transition-all duration-300 ${
         isMobile ? 'ml-0' : 'ml-64'
       }`}>
         {/* Seasonal Effects (Snow, etc.) */}
@@ -32,7 +32,7 @@ export const MainLayout = () => {
         {/* Lottie Animation - Bottom Left Corner */}
         <LottieAnimation />
         
-        {/* Background Logo Overlay - 10% opacity, centered in main content area */}
+        {/* Background Logo Overlay - 50% opacity, centered in main content area */}
         <div 
           className="absolute z-0 pointer-events-none hidden md:block"
           style={{
@@ -44,23 +44,14 @@ export const MainLayout = () => {
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            opacity: 0.1,
+            opacity: 0.5,
           }}
         />
-        {/* Header - Normal flow, appears at top */}
-        <div className="flex-shrink-0 relative z-20">
-          <Header />
-        </div>
-        {/* Main Content - Scrollable, normal flow */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden relative z-10 min-h-0">
-          <div className="w-full max-w-7xl mx-auto p-3 sm:p-4 md:p-6">
-            <Outlet />
-          </div>
+        <Header />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 relative z-10">
+          <Outlet />
         </main>
-        {/* Footer - Normal flow, appears at bottom of content */}
-        <div className="flex-shrink-0 relative z-20 mt-auto">
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </div>
   );

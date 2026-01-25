@@ -1,9 +1,9 @@
 // Shop Map View Component with Leaflet
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Navigation, Clock, Store, MapPin, Phone, ChevronRight } from 'lucide-react';
+import { Navigation, Clock, Store, MapPin } from 'lucide-react';
 
 // Fix for default marker icons in Leaflet with webpack/vite
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -13,13 +13,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-// Custom icons
-const createCustomIcon = (color: string, isUser: boolean = false) => {
+// Custom icons with rotation support
+const createCustomIcon = (color: string, isUser: boolean = false, heading?: number) => {
   const size = isUser ? 40 : 32;
+  const rotation = heading ? `transform: rotate(${heading}deg);` : '';
   const svg = isUser 
-    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" width="${size}" height="${size}">
+    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" width="${size}" height="${size}" style="${rotation}">
         <circle cx="12" cy="12" r="10" fill="${color}" stroke="white" stroke-width="2"/>
-        <circle cx="12" cy="12" r="4" fill="white"/>
+        <path d="M12 5 L15 12 L12 14 L9 12 Z" fill="white"/>
       </svg>`
     : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" width="${size}" height="${size}">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" stroke="white" stroke-width="1"/>
@@ -34,12 +35,14 @@ const createCustomIcon = (color: string, isUser: boolean = false) => {
   });
 };
 
-const userIcon = createCustomIcon('#0284c7', true); // Primary blue for user
-const shopIconGreen = createCustomIcon('#16a34a'); // Green - paid
-const shopIconOrange = createCustomIcon('#ea580c'); // Orange - pending
-const shopIconRed = createCustomIcon('#dc2626'); // Red - overdue
-const shopIconBlue = createCustomIcon('#0284c7'); // Blue - default
-const nextShopIcon = createCustomIcon('#7c3aed'); // Purple - next recommended shop
+// Note: User icon is created dynamically in render to support heading changes
+
+interface RouteOption {
+  coords: [number, number][];
+  distanceKm: number;
+  durationMin: number;
+  isMainRoute: boolean;
+}
 
 interface Shop {
   id: string;
@@ -51,27 +54,82 @@ interface Shop {
   paymentStatus?: 'paid' | 'pending' | 'ongoing' | 'cheque';
   distance?: number;
   estimatedTime?: number; // in minutes
+  heading?: number; // 0-360 degrees
 }
 
 interface ShopMapViewProps {
   shops: Shop[];
-  userLocation: { lat: number; lng: number } | null;
+  userLocation: { lat: number; lng: number; heading?: number } | null;
   onShopSelect: (shop: Shop) => void;
   onNavigate?: (shop: Shop) => void;
   selectedShopId?: string | null;
   showDirectionsInMap?: boolean;
 }
 
-// Component to update map view when location changes
-const MapUpdater = ({ center, zoom }: { center: [number, number]; zoom: number }) => {
+// Fetch real road route from OSRM API with alternatives
+const fetchRoute = async (
+  start: { lat: number; lng: number },
+  end: { lat: number; lng: number }
+): Promise<RouteOption[]> => {
+  try {
+    const url = `https://router.project-osrm.org/route/v1/driving/${start.lng},${start.lat};${end.lng},${end.lat}?overview=full&geometries=geojson&alternatives=true`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.routes || data.routes.length === 0) return [];
+
+    // Convert all routes to our format, marking first as main
+    return data.routes.map((route: any, index: number) => ({
+      coords: route.geometry.coordinates.map(
+        ([lng, lat]: [number, number]) => [lat, lng] as [number, number]
+      ),
+      distanceKm: route.distance / 1000,
+      durationMin: Math.round(route.duration / 60),
+      isMainRoute: index === 0,
+    }));
+  } catch (error) {
+    console.error('Error fetching route:', error);
+    return [];
+  }
+};
+
+// Component to update map view when location changes with smooth animation
+const MapUpdater = ({ center, zoom, fitBounds, routes }: { center: [number, number]; zoom: number; fitBounds?: boolean; routes: RouteOption[] }) => {
   const map = useMap();
+  
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+    if (fitBounds && routes.length > 0) {
+      // Get all coordinates from all routes
+      const allCoords = routes.flatMap(route => route.coords);
+      
+      if (allCoords.length > 0) {
+        const bounds = L.latLngBounds(allCoords as any);
+        map.fitBounds(bounds, {
+          padding: [50, 50],
+          animate: true,
+          duration: 1.5,
+        });
+        return;
+      }
+    }
+    
+    // Fallback to flyTo
+    map.flyTo(center, zoom, {
+      animate: true,
+      duration: 1.5,
+    });
+  }, [center, zoom, map, fitBounds, routes]);
+  
   return null;
 };
 
-// Calculate distance between two points (Haversine formula)
+// Utility functions
+// Linear interpolation for smooth animation (for future use with live location tracking)
+// const lerp = (start: number, end: number, t: number): number => {
+//   return start + (end - start) * t;
+// };
+
+// Calculate distance between two points (Haversine formula) - for display only
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
   const R = 6371; // Earth's radius in km
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -84,58 +142,94 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
   return R * c;
 };
 
-// Estimate travel time (assuming average speed of 30 km/h in urban areas)
-const estimateTravelTime = (distanceKm: number): number => {
-  const avgSpeedKmH = 30;
-  return Math.round((distanceKm / avgSpeedKmH) * 60); // minutes
-};
+// Calculate bearing/heading between two points (for future use with direction-aware features)
+// const calculateBearing = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+//   const dLon = (lon2 - lon1) * Math.PI / 180;
+//   const lat1Rad = lat1 * Math.PI / 180;
+//   const lat2Rad = lat2 * Math.PI / 180;
+//   
+//   const y = Math.sin(dLon) * Math.cos(lat2Rad);
+//   const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+//             Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
+//   
+//   const bearing = Math.atan2(y, x) * 180 / Math.PI;
+//   return (bearing + 360) % 360; // Normalize to 0-360
+// };
 
 // Get shop icon based on payment status
-const getShopIcon = (status?: string, isNext?: boolean) => {
-  if (isNext) return nextShopIcon;
+const getShopIcon = (status?: string, isNext?: boolean, isSelected?: boolean) => {
+  if (isSelected) return createCustomIcon('#000000');
+  
+  let color = '#0284c7'; // default blue
   switch (status) {
-    case 'paid': return shopIconGreen;
-    case 'ongoing': return shopIconOrange;
-    case 'cheque': return shopIconOrange;
-    case 'pending': return shopIconRed;
-    default: return shopIconBlue;
+    case 'paid': 
+      color = '#16a34a'; // green
+      break;
+    case 'ongoing': 
+    case 'cheque': 
+      color = '#ea580c'; // orange
+      break;
+    case 'pending': 
+      color = '#dc2626'; // red
+      break;
   }
+  
+  if (isNext) {
+    color = '#7c3aed'; // purple for next
+  }
+  
+  return createCustomIcon(color);
 };
 
 export const ShopMapView = ({ 
   shops, 
   userLocation, 
   onShopSelect, 
-  onNavigate,
   selectedShopId,
-  showDirectionsInMap = false
 }: ShopMapViewProps) => {
-  const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
+  const [routeOptions, setRouteOptions] = useState<RouteOption[]>([]);
   const [selectedRouteShop, setSelectedRouteShop] = useState<Shop | null>(null);
+  const [isLoadingRoute, setIsLoadingRoute] = useState(false);
+  const [routeError, setRouteError] = useState<string | null>(null);
+  const routeCacheRef = useRef<Map<string, RouteOption[]>>(new Map());
+  // Store accurate distances and times from OSRM for each shop
+  const osrmDataRef = useRef<Map<string, { distance: number; time: number }>>(new Map());
 
-  // Calculate distances and sort shops by proximity
+  // Calculate distances and sort shops by proximity, use OSRM data for accurate time
   const shopsWithDistance = useMemo(() => {
     if (!userLocation) return shops;
     
     return shops
       .filter(shop => shop.latitude && shop.longitude)
-      .map(shop => ({
-        ...shop,
-        distance: calculateDistance(
+      .map(shop => {
+        // Check if we have OSRM data for this shop
+        const osrmKey = `${userLocation.lat.toFixed(4)},${userLocation.lng.toFixed(4)}-${shop.id}`;
+        const osrmData = osrmDataRef.current.get(osrmKey);
+        
+        if (osrmData) {
+          // Use accurate OSRM data
+          return {
+            ...shop,
+            distance: osrmData.distance,
+            estimatedTime: osrmData.time
+          };
+        }
+        
+        // Fallback to Haversine estimation while waiting for OSRM data
+        const haversineDistance = calculateDistance(
           userLocation.lat, 
           userLocation.lng, 
           shop.latitude!, 
           shop.longitude!
-        ),
-        estimatedTime: estimateTravelTime(
-          calculateDistance(
-            userLocation.lat, 
-            userLocation.lng, 
-            shop.latitude!, 
-            shop.longitude!
-          )
-        )
-      }))
+        );
+        
+        return {
+          ...shop,
+          distance: haversineDistance,
+          // Estimate time: assuming 30 km/h average speed in urban areas
+          estimatedTime: Math.round((haversineDistance / 30) * 60)
+        };
+      })
       .sort((a, b) => (a.distance || 0) - (b.distance || 0));
   }, [shops, userLocation]);
 
@@ -146,17 +240,61 @@ export const ShopMapView = ({
     ) || shopsWithDistance[0];
   }, [shopsWithDistance]);
 
-  // Update route when selected shop or next shop changes
+  // Update route with real road directions from OSRM with caching
   useEffect(() => {
-    const targetShop = selectedRouteShop || nextRecommendedShop;
-    if (userLocation && targetShop?.latitude && targetShop?.longitude) {
-      // Simple straight line route (for actual routing, you'd use OSRM or similar)
-      setRouteCoords([
-        [userLocation.lat, userLocation.lng],
-        [targetShop.latitude, targetShop.longitude]
-      ]);
-    }
-  }, [userLocation, nextRecommendedShop, selectedRouteShop]);
+    const loadRoute = async () => {
+      const targetShop = selectedRouteShop || nextRecommendedShop;
+
+      if (
+        !userLocation ||
+        !targetShop?.latitude ||
+        !targetShop?.longitude
+      ) {
+        setRouteOptions([]);
+        return;
+      }
+
+      // Check cache first
+      const cacheKey = `${userLocation.lat},${userLocation.lng}-${targetShop.id}`;
+      const cachedRoute = routeCacheRef.current.get(cacheKey);
+      
+      if (cachedRoute) {
+        setRouteOptions(cachedRoute);
+        return;
+      }
+
+      setIsLoadingRoute(true);
+      setRouteError(null);
+
+      try {
+        const routes = await fetchRoute(
+          { lat: userLocation.lat, lng: userLocation.lng },
+          { lat: targetShop.latitude, lng: targetShop.longitude }
+        );
+
+        if (routes.length === 0) {
+          setRouteError('Unable to calculate route. Please try again.');
+        } else {
+          setRouteOptions(routes);
+          routeCacheRef.current.set(cacheKey, routes);
+          
+          // Store the accurate OSRM data for this shop
+          const mainRoute = routes[0];
+          osrmDataRef.current.set(cacheKey, {
+            distance: mainRoute.distanceKm,
+            time: mainRoute.durationMin
+          });
+        }
+      } catch (err) {
+        setRouteError('Error calculating route. Check your connection.');
+        console.error(err);
+      } finally {
+        setIsLoadingRoute(false);
+      }
+    };
+
+    loadRoute();
+  }, [userLocation, selectedRouteShop, nextRecommendedShop, shopsWithDistance]);
 
   // Handle showing directions for a shop
   const handleShowDirections = (shop: Shop) => {
@@ -178,17 +316,28 @@ export const ShopMapView = ({
           zoom={14}
           style={{ height: '100%', width: '100%', zIndex: 1 }}
           zoomControl={false}
+          preferCanvas={true}
+          inertia={true}
+          fadeAnimation={true}
         >
           <TileLayer
             attribution='&copy; OpenStreetMap'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           
-          <MapUpdater center={mapCenter} zoom={14} />
+          <MapUpdater 
+            center={mapCenter} 
+            zoom={14} 
+            fitBounds={routeOptions.length > 0}
+            routes={routeOptions}
+          />
 
-          {/* User Location Marker */}
+          {/* User Location Marker with Direction */}
           {userLocation && (
-            <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
+            <Marker 
+              position={[userLocation.lat, userLocation.lng]} 
+              icon={createCustomIcon('#0284c7', true, userLocation.heading)}
+            >
               <Popup>
                 <div className="text-center p-3">
                   <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-2">
@@ -198,32 +347,39 @@ export const ShopMapView = ({
                   <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
                     {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
                   </div>
+                  {userLocation.heading !== undefined && (
+                    <div className="text-xs text-primary-600 mt-2 font-medium">
+                      Heading: {userLocation.heading.toFixed(0)}°
+                    </div>
+                  )}
                 </div>
               </Popup>
             </Marker>
           )}
 
-          {/* Route Line to Shop */}
-          {routeCoords.length > 1 && (
+          {/* Route Lines - Multiple alternatives */}
+          {routeOptions.map((route, index) => (
             <Polyline
-              positions={routeCoords}
-              color="#7c3aed"
-              weight={5}
-              opacity={0.8}
-              dashArray="12, 8"
+              key={`route-${index}`}
+              positions={route.coords}
+              color={route.isMainRoute ? '#7c3aed' : '#9ca3af'}
+              weight={route.isMainRoute ? 5 : 3}
+              opacity={route.isMainRoute ? 0.8 : 0.5}
+              dashArray={route.isMainRoute ? undefined : '12, 8'}
             />
-          )}
+          ))}
 
           {/* Shop Markers */}
           {shopsWithDistance.map((shop) => {
             if (!shop.latitude || !shop.longitude) return null;
             const isNext = shop.id === nextRecommendedShop?.id;
+            const isSelected = shop.id === selectedShopId;
             
             return (
               <Marker
                 key={shop.id}
                 position={[shop.latitude, shop.longitude]}
-                icon={getShopIcon(shop.paymentStatus, isNext)}
+                icon={getShopIcon(shop.paymentStatus, isNext, isSelected)}
                 eventHandlers={{
                   click: () => onShopSelect(shop),
                 }}
@@ -316,11 +472,47 @@ export const ShopMapView = ({
               <div className="w-2.5 h-2.5 rounded-full bg-orange-500 ring-2 ring-orange-200"></div>
               <span className="text-gray-600">Pending</span>
             </div>
+            <div className="flex items-center gap-1.5 col-span-2 mt-1 pt-1.5 border-t border-gray-200">
+              <div className="h-0.5 w-3 bg-purple-500"></div>
+              <span className="text-gray-600">Main Route</span>
+            </div>
+            <div className="flex items-center gap-1.5 col-span-2">
+              <div className="h-0.5 w-3 bg-gray-300" style={{backgroundImage: 'repeating-linear-gradient(90deg, #9ca3af 0px, #9ca3af 2px, transparent 2px, transparent 4px)'}}></div>
+              <span className="text-gray-600">Alternative</span>
+            </div>
           </div>
         </div>
 
-        {/* Route Info Card */}
-        {(selectedRouteShop || nextRecommendedShop) && userLocation && (
+        {/* Route Info Card with Loading & Error States */}
+        {routeError && (
+          <div className="absolute bottom-3 left-3 right-3 bg-red-50 border border-red-200 rounded-2xl shadow-lg p-4 z-[400]">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-lg">⚠️</span>
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-red-900 text-sm">{routeError}</p>
+                <p className="text-xs text-red-700 mt-1">Check your internet connection</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isLoadingRoute && (
+          <div className="absolute bottom-3 left-3 right-3 bg-blue-50 border border-blue-200 rounded-2xl shadow-lg p-4 z-[400]">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0 animate-spin">
+                <div className="w-4 h-4 border-2 border-blue-400 border-t-blue-600 rounded-full"></div>
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-blue-900 text-sm">Calculating best route…</p>
+                <p className="text-xs text-blue-700 mt-1">Fetching directions from OSRM</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!routeError && !isLoadingRoute && (selectedRouteShop || nextRecommendedShop) && userLocation && (
           <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl p-4 z-[400] border border-gray-100">
             <div className="flex items-center gap-4">
               {/* Icon */}
@@ -342,16 +534,41 @@ export const ShopMapView = ({
                 <p className="font-bold text-gray-900 text-lg truncate">
                   {(selectedRouteShop || nextRecommendedShop)?.shopName}
                 </p>
-                <div className="flex items-center gap-4 mt-1">
-                  <span className="flex items-center gap-1.5 text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 text-primary-500" />
-                    <span className="font-semibold">{(selectedRouteShop || nextRecommendedShop)?.distance?.toFixed(1)} km</span>
-                  </span>
-                  <span className="flex items-center gap-1.5 text-sm text-gray-600">
-                    <Clock className="w-4 h-4 text-orange-500" />
-                    <span className="font-semibold">~{(selectedRouteShop || nextRecommendedShop)?.estimatedTime} min</span>
-                  </span>
+                <div className="flex items-center gap-4 mt-1 flex-wrap">
+                  {/* Show OSRM data if available */}
+                  {routeOptions.length > 0 && routeOptions[0] && (
+                    <>
+                      <span className="flex items-center gap-1.5 text-sm text-gray-600">
+                        <MapPin className="w-4 h-4 text-primary-500" />
+                        <span className="font-semibold">{routeOptions[0].distanceKm.toFixed(1)} km</span>
+                      </span>
+                      <span className="flex items-center gap-1.5 text-sm text-gray-600">
+                        <Clock className="w-4 h-4 text-orange-500" />
+                        <span className="font-semibold">~{routeOptions[0].durationMin} min</span>
+                      </span>
+                    </>
+                  )}
+                  {/* Fallback to estimated data */}
+                  {routeOptions.length === 0 && (selectedRouteShop || nextRecommendedShop) && (
+                    <>
+                      <span className="flex items-center gap-1.5 text-sm text-gray-600">
+                        <MapPin className="w-4 h-4 text-primary-500" />
+                        <span className="font-semibold">{(selectedRouteShop || nextRecommendedShop)?.distance?.toFixed(1)} km</span>
+                      </span>
+                      <span className="flex items-center gap-1.5 text-sm text-gray-600">
+                        <Clock className="w-4 h-4 text-orange-500" />
+                        <span className="font-semibold">~{(selectedRouteShop || nextRecommendedShop)?.estimatedTime} min</span>
+                      </span>
+                    </>
+                  )}
                 </div>
+
+                {/* Show alternative routes info */}
+                {routeOptions.length > 1 && (
+                  <p className="text-xs text-gray-500 mt-2 font-medium">
+                    {routeOptions.length} route options available
+                  </p>
+                )}
               </div>
               
               {/* Clear Button */}

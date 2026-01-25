@@ -146,6 +146,21 @@ export const createMobileSale = (data: {
   return api.post('/sales', data);
 };
 
+// ============================================
+// END OF DAY STOCK UPDATE
+// ============================================
+export const submitEndOfDayRequest = () => {
+  return api.post('/end-of-day');
+};
+
+export const getMyEndOfDayRequests = () => {
+  return api.get<{ success: boolean; data: any[] }>('/end-of-day');
+};
+
+export const getEndOfDayRequestDetails = (id: string) => {
+  return api.get<{ success: boolean; data: any }>(`/end-of-day/${id}`);
+};
+
 export const salespersonAPI = {
   updateLocation,
   getMyLocation,
@@ -156,6 +171,9 @@ export const salespersonAPI = {
   getShopSales,
   getMyInventory,
   createMobileSale,
+  submitEndOfDayRequest,
+  getMyEndOfDayRequests,
+  getEndOfDayRequestDetails,
 };
 
 export default salespersonAPI;

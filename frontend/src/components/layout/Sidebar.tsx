@@ -35,6 +35,7 @@ const navigation: NavItem[] = [
   { name: 'Salary', path: '/salary', icon: UsersIcon, roles: ['ADMIN'] },
   { name: 'Inventory', path: '/inventory', icon: CubeIcon, hiddenForRoles: ['SALESPERSON'] },
   { name: 'Production', path: '/production', icon: Cog6ToothIcon, roles: ['ADMIN'] },
+  { name: 'Allocated Products', path: '/allocated-products', icon: CubeIcon, roles: ['SALESPERSON'] },
   { name: 'Sales', path: '/sales', icon: ShoppingCartIcon },
   { name: 'Shops', path: '/buyers', icon: ShoppingBagIcon, roles: ['ADMIN'] },
   { name: 'Returns', path: '/returns', icon: ArrowPathIcon, hiddenForRoles: ['SALESPERSON'] },
@@ -72,9 +73,9 @@ export const Sidebar = () => {
   const filteredNavigation = navigation.filter((item) => {
     const userRole = user?.role || '';
     
-    // Salespersons can only access Dashboard, Sales, and Expenses
+    // Salespersons can access Dashboard, Allocated Products, Sales, and Expenses
     if (userRole === 'SALESPERSON') {
-      return item.path === '/' || item.path === '/sales' || item.path === '/expenses';
+      return item.path === '/' || item.path === '/allocated-products' || item.path === '/sales' || item.path === '/expenses' || (item.roles && item.roles.includes('SALESPERSON'));
     }
     
     // Hide items for specific roles
@@ -151,8 +152,7 @@ export const Sidebar = () => {
       {isMobile && (
         <button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="fixed top-[15px] left-4 z-[60] p-2.5 bg-primary-600 text-white rounded-xl shadow-xl hover:bg-primary-700 active:bg-primary-800 transition-all duration-200 touch-manipulation"
-          aria-label="Open menu"
+          className="fixed top-4 left-4 z-50 p-2 bg-primary-600 text-white rounded-lg shadow-lg hover:bg-primary-700 transition-colors"
         >
           <Bars3Icon className="w-6 h-6" />
         </button>

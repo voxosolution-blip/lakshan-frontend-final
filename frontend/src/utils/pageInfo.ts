@@ -48,6 +48,10 @@ export const pageInfo: Record<string, { title: string; description: string }> = 
     title: 'Reports',
     description: 'View analytics and generate reports',
   },
+  '/allocated-products': {
+    title: 'Allocated Products',
+    description: 'Real-time inventory of products allocated to you',
+  },
 };
 
 export const getPageInfo = (pathname: string) => {

@@ -2,8 +2,8 @@
 // Refreshes at 12:00, 1:00 PM, 2:00 PM, etc.
 
 export const setupHourlyRefresh = (callback: () => void): (() => void) => {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
-  let intervalId: ReturnType<typeof setInterval> | null = null;
+  let timeoutId: NodeJS.Timeout | null = null;
+  let intervalId: NodeJS.Timeout | null = null;
   
   const scheduleNextRefresh = () => {
     const now = new Date();

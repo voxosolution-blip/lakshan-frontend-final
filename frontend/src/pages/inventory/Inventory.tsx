@@ -97,6 +97,7 @@ export const Inventory = () => {
         category: item.category || item.category_name || 'unknown',
         unit: item.unit,
         currentStock: parseFloat(item.current_stock || item.quantity || 0),
+        totalUsage: parseFloat(item.total_usage || 0),
         minStockLevel: item.min_stock_level || item.min_quantity ? parseFloat(item.min_stock_level || item.min_quantity) : undefined,
         expiryDate: item.expiry_date || item.expiryDate,
         price: parseFloat(item.price || 0),
@@ -490,6 +491,7 @@ export const Inventory = () => {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Category</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Unit</th>
                   <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Current Stock</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Usage</th>
                   <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Min Level</th>
                   <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Price</th>
                   <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
@@ -563,6 +565,11 @@ export const Inventory = () => {
                           {formatNumber(item.currentStock)} {item.unit}
                         </span>
                       )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <span className="text-sm font-semibold text-blue-600">
+                        {formatNumber((item as any).totalUsage || 0)} {item.unit}
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <span className="text-sm text-gray-600">

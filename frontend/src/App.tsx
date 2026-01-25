@@ -19,6 +19,7 @@ import { Cheques } from './pages/cheques/Cheques';
 import { Expenses } from './pages/expenses/Expenses';
 import { Reports } from './pages/reports/Reports';
 import { Buyers } from './pages/buyers/Buyers';
+import { AllocatedProducts } from './pages/allocated-products/AllocatedProducts';
 import { LoginRoute } from './components/common/LoginRoute';
 
 function AppRoutes() {
@@ -124,6 +125,14 @@ function AppRoutes() {
           }
         />
         <Route path="expenses" element={<Expenses />} />
+        <Route
+          path="allocated-products"
+          element={
+            <ProtectedRoute allowedRoles={['SALESPERSON']}>
+              <AllocatedProducts />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="buyers"
           element={

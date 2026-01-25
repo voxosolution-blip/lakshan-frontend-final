@@ -1,419 +1,311 @@
 // Footer Component
 import {
-    EnvelopeIcon,
-    ChatBubbleLeftRightIcon,
-    Cog6ToothIcon,
-    XMarkIcon,
-    UserGroupIcon,
-    CurrencyDollarIcon,
-    GiftIcon,
-    CloudArrowDownIcon,
-    CloudArrowUpIcon,
-    ArrowPathIcon,
-    ShieldCheckIcon,
-    ExclamationTriangleIcon,
-  } from '@heroicons/react/24/outline';
+  EnvelopeIcon,
+  ChatBubbleLeftRightIcon,
+  Cog6ToothIcon,
+  XMarkIcon,
+  UserGroupIcon,
+  CurrencyDollarIcon,
+  GiftIcon,
+  CloudArrowDownIcon,
+  CloudArrowUpIcon,
+  ArrowPathIcon,
+  ShieldCheckIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminAPI } from '../../services/adminAPI';
-  
-  export const Footer = () => {
-    const navigate = useNavigate();
-    const footerRef = useRef<HTMLElement | null>(null);
-    const [footerHeight, setFooterHeight] = useState(0);
-    const [showSettings, setShowSettings] = useState(false);
+
+export const Footer = () => {
+  const navigate = useNavigate();
+  const footerRef = useRef<HTMLElement | null>(null);
+  const restoreInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [footerHeight, setFooterHeight] = useState(0);
+  const [showSettings, setShowSettings] = useState(false);
   const [settingsMounted, setSettingsMounted] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-    const restoreInputRef = useRef<HTMLInputElement | null>(null);
-    const [adminBusy, setAdminBusy] = useState<null | 'backup' | 'restore' | 'reset'>(null);
-    const whatsappNumber = '94710901871';
-    const whatsappUrl = `https://wa.me/${whatsappNumber}`;
-    const email = 'voxosolution@gmail.com';
-    const user = (() => {
-      try {
-        return JSON.parse(localStorage.getItem('user') || 'null');
-      } catch {
-        return null;
-      }
-    })();
-    const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
+  const [adminBusy, setAdminBusy] = useState<null | 'backup' | 'restore' | 'reset'>(null);
 
-    // Measure footer height so the popup stays ABOVE the footer area (footer remains visible)
-    useLayoutEffect(() => {
-      const measure = () => {
-        const h = footerRef.current?.getBoundingClientRect().height || 0;
-        setFooterHeight(h);
-      };
-      measure();
-      window.addEventListener('resize', measure);
-      return () => window.removeEventListener('resize', measure);
-    }, []);
+  const whatsappNumber = '94710901871';
+  const whatsappUrl = `https://wa.me/${whatsappNumber}`;
+  const email = 'voxosolution@gmail.com';
 
-  // Bottom-sheet animation: mount -> open; close -> animate out -> unmount
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null');
+    } catch {
+      return null;
+    }
+  })();
+
+  const isAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const h = footerRef.current?.getBoundingClientRect().height || 0;
+      setFooterHeight(h);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
   useEffect(() => {
     if (showSettings) {
       setSettingsMounted(true);
-      // next tick so transition animates
-      const t = setTimeout(() => setSettingsOpen(true), 20);
-      return () => clearTimeout(t);
+      setTimeout(() => setSettingsOpen(true), 20);
+    } else {
+      setSettingsOpen(false);
+      setTimeout(() => setSettingsMounted(false), 300);
     }
-    // animate out
-    setSettingsOpen(false);
-    const t = setTimeout(() => setSettingsMounted(false), 350);
-    return () => clearTimeout(t);
   }, [showSettings]);
-  
-    return (
-    <footer ref={footerRef as any} className="bg-primary-900 border-t border-primary-700 relative z-20">
-        <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 py-2 sm:py-2.5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
-  
-            {/* Left - Copyright - Mobile compact */}
-            <div className="text-primary-300 text-center sm:text-left order-2 sm:order-1">
-              © {new Date().getFullYear()}{' '}
-              <span className="font-semibold text-white">
-                VOXOsolution
-              </span>
-            </div>
-  
-            {/* Center - Contact Icons Only - Mobile first */}
-            <div className="flex items-center gap-3 sm:gap-4 md:gap-6 order-1 sm:order-2">
-  
-              {/* Email Icon */}
-              <a
-                href={`mailto:${email}`}
-                className="p-1.5 sm:p-2 rounded-xl text-primary-300 hover:text-white hover:bg-primary-800 transition-all border border-transparent hover:border-primary-700 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
-                title="Send Email"
-              >
-                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-              </a>
 
-              {/* Settings Icon - Admin Only */}
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => setShowSettings(true)}
-                  className="p-1.5 sm:p-2 rounded-xl text-primary-300 hover:text-white hover:bg-primary-800 transition-all border border-transparent hover:border-primary-700 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
-                  title="Settings"
-                >
-                  <Cog6ToothIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-              )}
-  
-              {/* WhatsApp Icon */}
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-1.5 sm:p-2 rounded-xl text-primary-300 hover:text-white hover:bg-primary-800 transition-all border border-transparent hover:border-primary-700 touch-manipulation min-w-[40px] min-h-[40px] flex items-center justify-center"
-                title="Chat on WhatsApp"
+  return (
+    <footer ref={footerRef as any} className="bg-primary-900 border-t border-primary-700">
+      <div className="max-w-7xl mx-auto px-3 py-2">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+
+          {/* Left */}
+          <div className="text-primary-300 text-center md:text-left">
+            © {new Date().getFullYear()} <span className="font-semibold text-white">VOXOsolution</span>
+          </div>
+
+          {/* Center Icons */}
+          <div className="flex items-center gap-5">
+            <a
+              href={`mailto:${email}`}
+              className="p-2 rounded-full text-primary-300 hover:text-white hover:bg-primary-800 transition"
+            >
+              <EnvelopeIcon className="w-5 h-5" />
+            </a>
+
+            {isAdmin && (
+              <button
+                onClick={() => setShowSettings(true)}
+                className="p-2 rounded-full text-primary-300 hover:text-white hover:bg-primary-800 transition"
               >
-                <ChatBubbleLeftRightIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-              </a>
-  
-            </div>
-  
-            {/* Right - Branding - Mobile compact */}
-            <div className="text-primary-400 text-center sm:text-right order-3 text-xs sm:text-sm">
-              <span className="hidden sm:inline">Powered by </span>
-              <span className="font-medium text-primary-200">
-                VOXOsolution
-              </span>
-              <span className="hidden md:inline"> Enterprise ERP v2.0</span>
-            </div>
-  
+                <Cog6ToothIcon className="w-5 h-5" />
+              </button>
+            )}
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full text-primary-300 hover:text-white hover:bg-primary-800 transition"
+            >
+              <ChatBubbleLeftRightIcon className="w-5 h-5" />
+            </a>
+          </div>
+
+          {/* Right */}
+          <div className="text-primary-400 text-center md:text-right">
+            Powered by <span className="font-medium text-primary-200">VOXOsolution</span>
           </div>
         </div>
+      </div>
 
-        {/* Settings Quick Menu - Redesigned with Rise Up Animation */}
-        {settingsMounted && (
+      {/* SETTINGS MODAL */}
+      {settingsMounted && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
           <div
-            className={`fixed inset-0 z-40 flex items-end sm:items-center justify-center ${settingsOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+            className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity ${
+              settingsOpen ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={() => setShowSettings(false)}
+          />
+
+          <div
+            className={`relative w-full sm:max-w-[480px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl
+            transform transition-all duration-300 ${
+              settingsOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+            }`}
           >
-            {/* Backdrop */}
-            <div
-              className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-                settingsOpen ? 'opacity-100' : 'opacity-0'
-              }`}
-              onClick={() => setShowSettings(false)}
-            />
-
-            {/* Centered Modal - System UI Style with Rise Up Animation */}
-            <div
-              className={`relative w-full sm:w-[95%] max-w-[480px] mx-auto
-                bg-white shadow-2xl rounded-t-3xl sm:rounded-2xl overflow-hidden border-t-4 border-primary-500
-                transform transition-all duration-300 ease-out
-                ${settingsOpen 
-                  ? 'translate-y-0 opacity-100 scale-100' 
-                  : 'translate-y-full sm:translate-y-8 opacity-0 sm:scale-95'
-                }`}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Settings"
-              style={{
-                maxHeight: settingsOpen ? '90vh' : '0',
-                transition: 'transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease-out, max-height 0.3s ease-out'
-              }}
-            >
-              {/* Header */}
-              <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-5 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-white/20 rounded-lg">
-                    <Cog6ToothIcon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-white text-lg">Settings</h2>
-                    <p className="text-primary-100 text-xs">Configure system preferences</p>
-                  </div>
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-primary-600 to-primary-700">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-lg">
+                  <Cog6ToothIcon className="w-6 h-6 text-white" />
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowSettings(false)}
-                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
-                >
-                  <XMarkIcon className="w-5 h-5" />
-                </button>
+                <div>
+                  <h2 className="text-white font-bold text-lg">Settings</h2>
+                  <p className="text-primary-100 text-xs">System configuration</p>
+                </div>
               </div>
+              <button onClick={() => setShowSettings(false)} className="text-white">
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
 
-              {/* Settings Content */}
-              <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
-                
-                {/* Application Settings Section */}
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-1 mb-3 flex items-center gap-2">
-                    <span className="w-8 h-px bg-gray-300"></span>
-                    Application Settings
-                    <span className="flex-1 h-px bg-gray-300"></span>
-                  </h3>
-                  
-                  <div className="space-y-2">
-                    {/* Worker Settings */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowSettings(false);
-                        navigate('/salary?settings=1');
-                      }}
-                      className="w-full flex items-center gap-4 px-4 py-3 rounded-xl bg-primary-50 hover:bg-primary-100 border border-primary-200 transition-all group"
-                    >
-                      <div className="p-2.5 bg-primary-500 rounded-lg group-hover:bg-primary-600 transition-colors">
-                        <UserGroupIcon className="w-5 h-5 text-white" />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="font-semibold text-gray-900">Worker Settings</p>
-                        <p className="text-xs text-gray-500">Manage worker rates & configurations</p>
-                      </div>
-                      <div className="text-primary-400 group-hover:text-primary-600">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </button>
+            {/* CONTENT */}
+            <div className="px-5 py-4 space-y-6 max-h-[65vh] overflow-y-auto">
 
-                    {/* Milk Price Settings */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowSettings(false);
-                        navigate('/milk/settings');
-                      }}
-                      className="w-full flex items-center gap-4 px-4 py-3 rounded-xl bg-green-50 hover:bg-green-100 border border-green-200 transition-all group"
-                    >
-                      <div className="p-2.5 bg-green-500 rounded-lg group-hover:bg-green-600 transition-colors">
-                        <CurrencyDollarIcon className="w-5 h-5 text-white" />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="font-semibold text-gray-900">Milk Price Settings</p>
-                        <p className="text-xs text-gray-500">Set milk collection price per liter</p>
-                      </div>
-                      <div className="text-green-400 group-hover:text-green-600">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </button>
+              {/* Application Settings */}
+              <section>
+                <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
+                  Application Settings
+                </h3>
 
-                    {/* Free Products Settings */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowSettings(false);
-                        navigate('/milk/free-products-settings');
-                      }}
-                      className="w-full flex items-center gap-4 px-4 py-3 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 transition-all group"
-                    >
-                      <div className="p-2.5 bg-purple-500 rounded-lg group-hover:bg-purple-600 transition-colors">
-                        <GiftIcon className="w-5 h-5 text-white" />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="font-semibold text-gray-900">Dairy Collector Free Products</p>
-                        <p className="text-xs text-gray-500">Configure free product allocations</p>
-                      </div>
-                      <div className="text-purple-400 group-hover:text-purple-600">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    </button>
-                  </div>
+                <div className="space-y-3">
+                  <SettingItem
+                    icon={<UserGroupIcon className="w-6 h-6 text-primary-600" />}
+                    title="Worker Settings"
+                    desc="Salary & worker configuration"
+                    onClick={() => {
+                      setShowSettings(false);
+                      navigate('/salary?settings=1');
+                    }}
+                  />
+
+                  <SettingItem
+                    icon={<CurrencyDollarIcon className="w-6 h-6 text-green-600" />}
+                    title="Milk Price"
+                    desc="Milk price per litre"
+                    onClick={() => {
+                      setShowSettings(false);
+                      navigate('/milk/settings');
+                    }}
+                  />
+
+                  <SettingItem
+                    icon={<GiftIcon className="w-6 h-6 text-purple-600" />}
+                    title="Free Products"
+                    desc="Collector incentives"
+                    onClick={() => {
+                      setShowSettings(false);
+                      navigate('/milk/free-products-settings');
+                    }}
+                  />
+                </div>
+              </section>
+
+              {/* Admin Section */}
+              <section>
+                <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
+                  System Administration
+                </h3>
+
+                <div className={`p-3 rounded-xl border flex items-center gap-2 ${
+                  isAdmin ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'
+                }`}>
+                  <ShieldCheckIcon className={`w-5 h-5 ${
+                    isAdmin ? 'text-green-600' : 'text-yellow-600'
+                  }`} />
+                  <span className="text-sm font-medium">
+                    {isAdmin ? 'Admin Access Enabled' : 'Admin access required'}
+                  </span>
                 </div>
 
-                {/* System Administration Section */}
-                <div>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-1 mb-3 flex items-center gap-2">
-                    <span className="w-8 h-px bg-gray-300"></span>
-                    System Administration
-                    <span className="flex-1 h-px bg-gray-300"></span>
-                  </h3>
-
-                  {/* Admin Badge */}
-                  <div className={`mb-3 px-4 py-2 rounded-lg flex items-center gap-2 ${isAdmin ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'}`}>
-                    <ShieldCheckIcon className={`w-5 h-5 ${isAdmin ? 'text-green-600' : 'text-yellow-600'}`} />
-                    <span className={`text-sm font-medium ${isAdmin ? 'text-green-700' : 'text-yellow-700'}`}>
-                      {isAdmin ? 'Admin Access Granted' : 'Admin login required for system tools'}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-3">
-                    {/* Backup Button */}
-                    <button
-                      type="button"
-                      disabled={!isAdmin || adminBusy !== null}
-                      onClick={async () => {
-                        try {
-                          setAdminBusy('backup');
-                          const blob = await adminAPI.downloadBackup();
-                          const url = window.URL.createObjectURL(blob);
-                          const a = document.createElement('a');
-                          a.href = url;
-                          a.download = `yogurt_erp_backup_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.sql`;
-                          a.click();
-                          window.URL.revokeObjectURL(url);
-                        } catch (e: any) {
-                          alert(e?.response?.data?.message || 'Backup failed');
-                        } finally {
-                          setAdminBusy(null);
-                        }
-                      }}
-                      className={`flex flex-col items-center gap-2 px-3 py-4 rounded-xl border-2 transition-all ${
-                        !isAdmin || adminBusy !== null 
-                          ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed' 
-                          : 'bg-primary-50 hover:bg-primary-100 border-primary-200 hover:border-primary-400 text-primary-700'
-                      }`}
-                      title="Download full system backup"
-                    >
-                      <div className={`p-2 rounded-lg ${!isAdmin || adminBusy !== null ? 'bg-gray-200' : 'bg-primary-500'}`}>
-                        <CloudArrowDownIcon className={`w-5 h-5 ${!isAdmin || adminBusy !== null ? 'text-gray-400' : 'text-white'}`} />
-                      </div>
-                      <span className="text-sm font-medium">
-                        {adminBusy === 'backup' ? 'Backing up...' : 'Backup'}
-                      </span>
-                    </button>
-
-                    {/* Restore Button */}
-                    <button
-                      type="button"
-                      disabled={!isAdmin || adminBusy !== null}
-                      onClick={() => restoreInputRef.current?.click()}
-                      className={`flex flex-col items-center gap-2 px-3 py-4 rounded-xl border-2 transition-all ${
-                        !isAdmin || adminBusy !== null 
-                          ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed' 
-                          : 'bg-blue-50 hover:bg-blue-100 border-blue-200 hover:border-blue-400 text-blue-700'
-                      }`}
-                      title="Restore from a backup file"
-                    >
-                      <div className={`p-2 rounded-lg ${!isAdmin || adminBusy !== null ? 'bg-gray-200' : 'bg-blue-500'}`}>
-                        <CloudArrowUpIcon className={`w-5 h-5 ${!isAdmin || adminBusy !== null ? 'text-gray-400' : 'text-white'}`} />
-                      </div>
-                      <span className="text-sm font-medium">
-                        {adminBusy === 'restore' ? 'Restoring...' : 'Restore'}
-                      </span>
-                    </button>
-
-                    {/* Reset Button */}
-                    <button
-                      type="button"
-                      disabled={!isAdmin || adminBusy !== null}
-                      onClick={async () => {
-                        const ok = window.prompt('Type RESET to confirm full system reset (this will delete ALL data).');
-                        if (String(ok || '').toUpperCase() !== 'RESET') return;
-                        try {
-                          setAdminBusy('reset');
-                          await adminAPI.resetSystem();
-                          alert('System reset completed. You will be logged out now.');
-                          localStorage.removeItem('token');
-                          localStorage.removeItem('user');
-                          window.location.href = '/login';
-                        } catch (e: any) {
-                          alert(e?.response?.data?.message || 'Reset failed');
-                        } finally {
-                          setAdminBusy(null);
-                        }
-                      }}
-                      className={`flex flex-col items-center gap-2 px-3 py-4 rounded-xl border-2 transition-all ${
-                        !isAdmin || adminBusy !== null
-                          ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
-                          : 'bg-red-50 hover:bg-red-100 border-red-200 hover:border-red-400 text-red-700'
-                      }`}
-                      title="Danger: wipe and recreate the entire system"
-                    >
-                      <div className={`p-2 rounded-lg ${!isAdmin || adminBusy !== null ? 'bg-gray-200' : 'bg-red-500'}`}>
-                        <ArrowPathIcon className={`w-5 h-5 ${!isAdmin || adminBusy !== null ? 'text-gray-400' : 'text-white'}`} />
-                      </div>
-                      <span className="text-sm font-medium">
-                        {adminBusy === 'reset' ? 'Resetting...' : 'Reset'}
-                      </span>
-                    </button>
-                  </div>
-
-                  {/* Warning Note */}
-                  <div className="mt-3 px-3 py-2 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-2">
-                    <ExclamationTriangleIcon className="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-yellow-700">
-                      <span className="font-semibold">Caution:</span> System reset will permanently delete all data. Always create a backup before resetting.
-                    </p>
-                  </div>
-
-                  <input
-                    ref={restoreInputRef}
-                    type="file"
-                    accept=".sql,.dump"
-                    className="hidden"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      e.target.value = '';
-                      if (!file) return;
-                      const confirmRestore = window.confirm(
-                        `Restore will REPLACE the entire database with this file:\n\n${file.name}\n\nContinue?`
-                      );
-                      if (!confirmRestore) return;
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <AdminAction
+                    icon={<CloudArrowDownIcon className="w-6 h-6 text-primary-600" />}
+                    label="Backup"
+                    disabled={!isAdmin || adminBusy !== null}
+                    onClick={async () => {
                       try {
-                        setAdminBusy('restore');
-                        await adminAPI.restoreFromBackup(file);
-                        alert('Restore completed. Please refresh the app and login again.');
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                        window.location.href = '/login';
-                      } catch (err: any) {
-                        alert(err?.response?.data?.message || 'Restore failed');
+                        setAdminBusy('backup');
+                        const blob = await adminAPI.downloadBackup();
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `backup_${Date.now()}.sql`;
+                        a.click();
+                        URL.revokeObjectURL(url);
                       } finally {
                         setAdminBusy(null);
                       }
                     }}
                   />
-                </div>
-              </div>
 
-              {/* Footer */}
-              <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
-                <p className="text-xs text-center text-gray-500">
-                  Lakshan Dairy Products ERP • Powered by <span className="font-semibold text-primary-600">VOXOsolution</span>
-                </p>
-              </div>
+                  <AdminAction
+                    icon={<CloudArrowUpIcon className="w-6 h-6 text-blue-600" />}
+                    label="Restore"
+                    disabled={!isAdmin || adminBusy !== null}
+                    onClick={() => restoreInputRef.current?.click()}
+                  />
+                </div>
+
+                {/* Danger Zone */}
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
+                  <div className="flex gap-2 text-red-700">
+                    <ExclamationTriangleIcon className="w-5 h-5" />
+                    <div>
+                      <p className="font-semibold text-sm">Danger Zone</p>
+                      <p className="text-xs">This will delete all data permanently</p>
+                    </div>
+                  </div>
+
+                  <button
+                    disabled={!isAdmin || adminBusy !== null}
+                    onClick={async () => {
+                      const ok = prompt('Type RESET to confirm');
+                      if (ok !== 'RESET') return;
+                      try {
+                        setAdminBusy('reset');
+                        await adminAPI.resetSystem();
+                        window.location.href = '/login';
+                      } finally {
+                        setAdminBusy(null);
+                      }
+                    }}
+                    className="mt-4 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition disabled:opacity-50"
+                  >
+                    Reset System
+                  </button>
+                </div>
+              </section>
             </div>
+
+            <input
+              ref={restoreInputRef}
+              type="file"
+              accept=".sql,.dump"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (!file) return;
+                if (!confirm(`Restore database with ${file.name}?`)) return;
+                try {
+                  setAdminBusy('restore');
+                  await adminAPI.restoreFromBackup(file);
+                  window.location.href = '/login';
+                } finally {
+                  setAdminBusy(null);
+                }
+              }}
+            />
           </div>
-        )}
-      </footer>
-    );
-  };
-  
+        </div>
+      )}
+    </footer>
+  );
+};
+
+/* ===== Reusable Components ===== */
+
+const SettingItem = ({ icon, title, desc, onClick }: any) => (
+  <button
+    onClick={onClick}
+    className="w-full flex items-center gap-4 p-4 bg-white border rounded-2xl hover:shadow-md transition"
+  >
+    <div className="p-3 bg-gray-100 rounded-xl">{icon}</div>
+    <div className="text-left flex-1">
+      <p className="font-semibold text-gray-900">{title}</p>
+      <p className="text-xs text-gray-500">{desc}</p>
+    </div>
+  </button>
+);
+
+const AdminAction = ({ icon, label, onClick, disabled }: any) => (
+  <button
+    disabled={disabled}
+    onClick={onClick}
+    className="p-4 border rounded-2xl bg-white hover:shadow-md transition disabled:opacity-50"
+  >
+    <div className="flex justify-center">{icon}</div>
+    <p className="mt-2 text-sm font-medium text-center">{label}</p>
+  </button>
+);

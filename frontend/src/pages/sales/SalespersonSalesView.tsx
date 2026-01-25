@@ -255,40 +255,40 @@ export const SalespersonSalesView = () => {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-3 sm:space-y-4 md:space-y-6 px-3 sm:px-4 md:px-6 pb-4">
+    <div className="space-y-4 md:space-y-6 px-2 md:px-0">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 pt-2 sm:pt-0">
-        <div className="flex-1">
-          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 tracking-tight">Sales</h1>
-          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Latest transactions per shop</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Sales</h1>
+          <p className="text-xs md:text-sm text-gray-500 mt-1">Latest transactions per shop</p>
         </div>
       </div>
 
       {/* Desktop Table View */}
-      <div className="hidden md:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="hidden md:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Shop
                 </th>
-                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Contact
                 </th>
-                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="text-left px-4 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Items
                 </th>
-                <th className="text-right px-4 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="text-right px-4 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Total
                 </th>
-                <th className="text-center px-4 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="text-center px-4 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="text-center px-4 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th className="text-center px-4 py-4 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -354,7 +354,7 @@ export const SalespersonSalesView = () => {
                         <td className="px-4 py-4 text-center">
                           <button
                             onClick={() => handleViewShop(summary.shopId)}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm hover:shadow-md"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
                           >
                             {isExpanded ? (
                               <>
@@ -394,10 +394,10 @@ export const SalespersonSalesView = () => {
       </div>
 
       {/* Mobile Card View */}
-      <div className="md:hidden space-y-3 sm:space-y-4">
+      <div className="md:hidden space-y-3">
         {shopSummaries.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 sm:p-10 text-center text-gray-500">
-            <p className="text-sm sm:text-base">No sales found</p>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+            No sales found
           </div>
         ) : (
           shopSummaries.map((summary) => {
@@ -409,45 +409,45 @@ export const SalespersonSalesView = () => {
             const itemCount = summary.latestSale.items?.length || 0;
 
             return (
-              <div key={summary.shopId} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md">
-                <div className="p-4 sm:p-5 space-y-3 sm:space-y-4">
+              <div key={summary.shopId} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div className="p-4 space-y-3">
                   {/* Shop Header */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate">{summary.shopName}</h3>
-                      <div className="flex items-center gap-1.5 mt-1.5">
-                        <MapPinIcon className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-gray-600 truncate">{summary.address}</span>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-base font-semibold text-gray-900">{summary.shopName}</h3>
+                      <div className="flex items-center gap-1 mt-1">
+                        <MapPinIcon className="w-3 h-3 text-gray-400" />
+                        <span className="text-xs text-gray-500">{summary.address}</span>
                       </div>
-                      <div className="mt-1.5">
-                        <span className="text-xs sm:text-sm text-gray-600">Contact: <span className="font-medium">{summary.contact}</span></span>
+                      <div className="mt-1">
+                        <span className="text-xs text-gray-600">Contact: {summary.contact}</span>
                       </div>
                     </div>
-                    <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold flex-shrink-0 ${status.color}`}>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${status.color}`}>
                       {status.text}
                     </span>
                   </div>
 
                   {/* Sale Details */}
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4 pt-3 border-t border-gray-100">
-                    <div className="space-y-1">
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                    <div>
                       <span className="text-xs text-gray-500 block">Date</span>
-                      <div className="flex items-center gap-1.5">
-                        <CalendarIcon className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                        <span className="text-sm sm:text-base font-semibold text-gray-900">
+                      <div className="flex items-center gap-1 mt-1">
+                        <CalendarIcon className="w-3 h-3 text-gray-400" />
+                        <span className="text-sm font-medium text-gray-900">
                           {new Date(summary.latestSale.date).toLocaleDateString('en-GB')}
                         </span>
                       </div>
                     </div>
-                    <div className="space-y-1">
+                    <div>
                       <span className="text-xs text-gray-500 block">Items</span>
-                      <span className="text-sm sm:text-base font-semibold text-gray-900 block">
+                      <span className="text-sm font-medium text-gray-900 mt-1 block">
                         {itemCount} item{itemCount !== 1 ? 's' : ''}
                       </span>
                     </div>
-                    <div className="col-span-2 pt-2 border-t border-gray-100">
-                      <span className="text-xs text-gray-500 block mb-1">Total Amount</span>
-                      <span className="text-xl sm:text-2xl font-bold text-primary-600 block">
+                    <div className="col-span-2">
+                      <span className="text-xs text-gray-500 block">Total Amount</span>
+                      <span className="text-lg font-bold text-gray-900 mt-1 block">
                         {formatCurrencySimple(summary.latestSale.totalAmount || 0)}
                       </span>
                     </div>
@@ -456,16 +456,16 @@ export const SalespersonSalesView = () => {
                   {/* View Button */}
                   <button
                     onClick={() => handleViewShop(summary.shopId)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 text-sm sm:text-base font-semibold text-primary-700 bg-primary-50 hover:bg-primary-100 active:bg-primary-200 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md touch-manipulation min-h-[44px]"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
                   >
                     {isExpanded ? (
                       <>
-                        <ChevronUpIcon className="w-5 h-5" />
+                        <ChevronUpIcon className="w-4 h-4" />
                         Hide Details
                       </>
                     ) : (
                       <>
-                        <EyeIcon className="w-5 h-5" />
+                        <EyeIcon className="w-4 h-4" />
                         View Details
                       </>
                     )}
@@ -474,7 +474,7 @@ export const SalespersonSalesView = () => {
 
                 {/* Expanded Shop Details - Mobile */}
                 {isExpanded && (
-                  <div className="border-t-2 border-gray-200 bg-gradient-to-b from-gray-50 to-white p-4 sm:p-5">
+                  <div className="border-t border-gray-200 bg-gray-50 p-4">
                     <ShopDetailsView
                       shopId={summary.shopId}
                       shopName={summary.shopName}
@@ -492,43 +492,34 @@ export const SalespersonSalesView = () => {
 
       {/* Reverse Payment Modal */}
       {showReverseModal && selectedSaleForReverse && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
-          <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-5">
-              <div className="p-2 sm:p-2.5 bg-red-100 rounded-lg flex-shrink-0">
-                <ExclamationTriangleIcon className="w-6 h-6 sm:w-7 sm:h-7 text-red-600" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1">Reverse Bill</h2>
-                <p className="text-xs sm:text-sm text-gray-600">
-                  This action cannot be undone
-                </p>
-              </div>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-4 md:p-6 max-w-md w-full shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center gap-3 mb-4">
+              <ExclamationTriangleIcon className="w-6 h-6 md:w-8 md:h-8 text-red-600 flex-shrink-0" />
+              <h2 className="text-lg md:text-xl font-bold text-gray-800">Reverse Bill</h2>
             </div>
-            <div className="mb-4 sm:mb-5">
-              <p className="text-sm sm:text-base text-gray-700 font-medium mb-3">
-                Are you sure you want to reverse this bill? This action will:
-              </p>
-              <ul className="list-disc list-inside text-sm sm:text-base text-gray-600 space-y-2 ml-2">
-                <li>Restore all inventory items to previous stage</li>
-                <li>Delete all payment records</li>
-                <li>Mark this sale as reversed</li>
-              </ul>
-            </div>
-            <div className="mb-4 sm:mb-5">
-              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
-                Reason <span className="text-gray-500 font-normal">(Optional)</span>
+            <p className="text-gray-600 mb-4">
+              Are you sure you want to reverse this bill? This action will:
+            </p>
+            <ul className="list-disc list-inside text-sm text-gray-600 mb-4 space-y-1">
+              <li>Restore all inventory items to previous stage</li>
+              <li>Delete all payment records</li>
+              <li>Mark this sale as reversed</li>
+            </ul>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Reason (Optional)
               </label>
               <textarea
                 value={reverseReason}
                 onChange={(e) => setReverseReason(e.target.value)}
                 placeholder="Enter reason for reversing this bill..."
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                 rows={3}
               />
             </div>
-            <div className="mb-5 sm:mb-6">
-              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password <span className="text-red-600">*</span>
               </label>
               <input
@@ -536,25 +527,25 @@ export const SalespersonSalesView = () => {
                 value={reversePassword}
                 onChange={(e) => setReversePassword(e.target.value)}
                 placeholder="Enter password: salesperson123"
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                 autoFocus
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => {
                   setShowReverseModal(false);
                   setReversePassword('');
                   setReverseReason('');
                 }}
-                className="flex-1 py-3 sm:py-3.5 px-4 text-sm sm:text-base font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md touch-manipulation min-h-[48px]"
+                className="btn-secondary flex-1 py-2.5 text-sm md:text-base"
                 disabled={reversingSale}
               >
                 Cancel
               </button>
               <button
                 onClick={confirmReverseSale}
-                className="flex-1 py-3 sm:py-3.5 px-4 text-sm sm:text-base font-semibold text-white bg-red-600 hover:bg-red-700 active:bg-red-800 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation min-h-[48px]"
+                className="btn-primary flex-1 py-2.5 text-sm md:text-base bg-red-600 hover:bg-red-700 text-white"
                 disabled={reversingSale || !reversePassword}
               >
                 {reversingSale ? 'Reversing...' : 'Reverse Bill'}
@@ -695,19 +686,19 @@ const ShopDetailsView = ({
   }
 
   return (
-    <div className="space-y-3 sm:space-y-4 md:space-y-5">
+    <div className="space-y-3 md:space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 border-b-2 border-gray-200 pb-3 sm:pb-4">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 truncate">Shop: {shopName}</h3>
-          <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-1">Month: <span className="font-semibold">{formatMonth(selectedMonth)}</span></p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-3">
+        <div>
+          <h3 className="text-base md:text-lg font-bold text-gray-900">Shop: {shopName}</h3>
+          <p className="text-xs md:text-sm text-gray-600">Month: {formatMonth(selectedMonth)}</p>
         </div>
-        <div className="w-full sm:w-auto sm:min-w-[200px]">
-          <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Select Month</label>
+        <div className="w-full sm:w-auto">
+          <label className="block text-xs font-medium text-gray-700 mb-1">Select Month</label>
           <select
             value={selectedMonth}
             onChange={(e) => onMonthChange(e.target.value)}
-            className="w-full sm:w-auto px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-300 rounded-xl text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white font-medium touch-manipulation min-h-[44px]"
+            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             {getMonthOptions().map((option) => (
               <option key={option.value} value={option.value}>
@@ -720,26 +711,26 @@ const ShopDetailsView = ({
 
       {/* Desktop Table View */}
       {details.length === 0 ? (
-        <div className="text-center text-gray-500 py-8 sm:py-10 text-sm sm:text-base bg-gray-50 rounded-xl border border-gray-200">
-          <p>No sales found for {formatMonth(selectedMonth)}</p>
+        <div className="text-center text-gray-500 py-8 text-sm md:text-base">
+          No sales found for {formatMonth(selectedMonth)}
         </div>
       ) : (
         <>
-          <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-200 bg-white">
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                <th className="text-left px-4 py-3 font-semibold text-gray-700 uppercase tracking-wider text-xs">Date</th>
-                <th className="text-left px-4 py-3 font-semibold text-gray-700 uppercase tracking-wider text-xs">Time</th>
-                <th className="text-center px-4 py-3 font-semibold text-gray-700 uppercase tracking-wider text-xs">Items Sold</th>
+              <tr className="bg-gray-100 border-b border-gray-200">
+                <th className="text-left px-3 py-2 font-semibold text-gray-700">Date</th>
+                <th className="text-left px-3 py-2 font-semibold text-gray-700">Time</th>
+                <th className="text-center px-3 py-2 font-semibold text-gray-700">Items Sold</th>
                 {products.map((product) => (
-                  <th key={product} className="text-center px-4 py-3 font-semibold text-gray-700 uppercase tracking-wider text-xs">
+                  <th key={product} className="text-center px-3 py-2 font-semibold text-gray-700">
                     {product}
                   </th>
                 ))}
-                <th className="text-right px-4 py-3 font-semibold text-gray-700 uppercase tracking-wider text-xs">Total</th>
-                <th className="text-center px-4 py-3 font-semibold text-gray-700 uppercase tracking-wider text-xs">Status</th>
-                <th className="text-center px-4 py-3 font-semibold text-gray-700 uppercase tracking-wider text-xs">Actions</th>
+                <th className="text-right px-3 py-2 font-semibold text-gray-700">Total</th>
+                <th className="text-center px-3 py-2 font-semibold text-gray-700">Status</th>
+                <th className="text-center px-3 py-2 font-semibold text-gray-700">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -772,16 +763,16 @@ const ShopDetailsView = ({
                         {status.text}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-3 py-2 text-center">
                       {detail.paymentStatus === 'paid' && !detail.isReversed && (
                         <button
                           onClick={() => {
                             const sale = sales.find((s) => s.id === detail.saleId);
                             if (sale) onReverseSale(sale);
                           }}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm hover:shadow-md"
+                          className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded transition-colors"
                         >
-                          <ArrowPathIcon className="w-3.5 h-3.5" />
+                          <ArrowPathIcon className="w-3 h-3" />
                           Reverse
                         </button>
                       )}
@@ -797,7 +788,7 @@ const ShopDetailsView = ({
           </div>
 
           {/* Mobile Card View */}
-          <div className="md:hidden space-y-3 sm:space-y-4">
+          <div className="md:hidden space-y-3">
             {details.map((detail) => {
               const status = getStatusBadge(detail.paymentStatus, detail.paymentMethod);
               const itemMap = new Map<string, number>();
@@ -806,32 +797,32 @@ const ShopDetailsView = ({
               });
 
               return (
-                <div key={detail.saleId} className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 space-y-3 sm:space-y-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div key={detail.saleId} className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
                   {/* Sale Header */}
-                  <div className="flex items-start justify-between gap-3 border-b-2 border-gray-100 pb-3">
-                    <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between border-b pb-2">
+                    <div>
                       <div className="flex items-center gap-2">
-                        <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0" />
-                        <span className="text-sm sm:text-base font-bold text-gray-900">{detail.date}</span>
+                        <CalendarIcon className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm font-semibold text-gray-900">{detail.date}</span>
                       </div>
-                      <span className="text-xs sm:text-sm text-gray-600 mt-1.5 block">{detail.time}</span>
+                      <span className="text-xs text-gray-500 mt-1 block">{detail.time}</span>
                     </div>
-                    <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold flex-shrink-0 ${status.color}`}>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${status.color}`}>
                       {status.text}
                     </span>
                   </div>
 
                   {/* Items */}
-                  <div className="space-y-2">
-                    <span className="text-xs sm:text-sm text-gray-600 font-semibold block mb-2">Items Sold: <span className="text-gray-900">{detail.items.length}</span></span>
-                    <div className="space-y-2 bg-gray-50 rounded-lg p-3 sm:p-4">
+                  <div>
+                    <span className="text-xs text-gray-500 block mb-2">Items Sold: {detail.items.length}</span>
+                    <div className="space-y-1">
                       {products.map((product) => {
                         const qty = itemMap.get(product) || 0;
                         if (qty === 0) return null;
                         return (
-                          <div key={product} className="flex justify-between items-center text-sm sm:text-base py-1">
-                            <span className="text-gray-700 font-medium">{product}</span>
-                            <span className="font-bold text-gray-900 bg-white px-2.5 py-1 rounded-lg shadow-sm">{qty}</span>
+                          <div key={product} className="flex justify-between text-sm">
+                            <span className="text-gray-700">{product}</span>
+                            <span className="font-medium text-gray-900">{qty}</span>
                           </div>
                         );
                       })}
@@ -839,33 +830,31 @@ const ShopDetailsView = ({
                   </div>
 
                   {/* Total */}
-                  <div className="pt-3 border-t-2 border-gray-100">
+                  <div className="pt-2 border-t border-gray-100">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm sm:text-base font-semibold text-gray-700">Total Amount</span>
-                      <span className="text-lg sm:text-xl font-bold text-primary-600">
+                      <span className="text-sm font-semibold text-gray-700">Total Amount</span>
+                      <span className="text-lg font-bold text-gray-900">
                         {formatCurrencySimple(detail.totalAmount)}
                       </span>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="pt-3 border-t-2 border-gray-100">
+                  <div className="pt-2 border-t border-gray-100">
                     {detail.paymentStatus === 'paid' && !detail.isReversed && (
                       <button
                         onClick={() => {
                           const sale = sales.find((s) => s.id === detail.saleId);
                           if (sale) onReverseSale(sale);
                         }}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm sm:text-base font-semibold text-red-700 bg-red-50 hover:bg-red-100 active:bg-red-200 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md touch-manipulation min-h-[44px]"
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded transition-colors"
                       >
-                        <ArrowPathIcon className="w-5 h-5" />
+                        <ArrowPathIcon className="w-4 h-4" />
                         Reverse Payment
                       </button>
                     )}
                     {detail.isReversed && (
-                      <div className="text-center py-2">
-                        <span className="text-xs sm:text-sm text-gray-500 italic bg-gray-100 px-3 py-1.5 rounded-lg inline-block">This sale has been reversed</span>
-                      </div>
+                      <span className="text-xs text-gray-500 italic text-center block">This sale has been reversed</span>
                     )}
                   </div>
                 </div>

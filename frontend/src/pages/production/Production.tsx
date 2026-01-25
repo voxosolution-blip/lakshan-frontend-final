@@ -67,10 +67,8 @@ export const Production = () => {
   const [showBulkAllocationModal, setShowBulkAllocationModal] = useState(false);
   const [allocations, setAllocations] = useState<any[]>([]);
   const [allocationForm, setAllocationForm] = useState({
-    productionId: '',
     productId: '',
-    inventoryItemId: '', // For inventory-based allocations
-    allocationType: 'production' as 'production' | 'inventory', // New field to distinguish allocation source
+    inventoryItemId: '', // All allocations now come from inventory
     salespersonId: '',
     quantityAllocated: '',
     notes: ''
@@ -285,18 +283,15 @@ export const Production = () => {
 
   const handleCreateAllocation = async (e: React.FormEvent) => {
     e.preventDefault();
-    const hasProduction = allocationForm.allocationType === 'production' && allocationForm.productionId;
-    const hasInventory = allocationForm.allocationType === 'inventory' && allocationForm.inventoryItemId;
     
-    if ((!hasProduction && !hasInventory) || !allocationForm.productId || !allocationForm.salespersonId || !allocationForm.quantityAllocated) {
+    if (!allocationForm.inventoryItemId || !allocationForm.productId || !allocationForm.salespersonId || !allocationForm.quantityAllocated) {
       alert('Please fill all required fields');
       return;
     }
 
     try {
       await productionAPI.createAllocation({
-        productionId: allocationForm.allocationType === 'production' ? allocationForm.productionId : undefined,
-        inventoryItemId: allocationForm.allocationType === 'inventory' ? allocationForm.inventoryItemId : undefined,
+        inventoryItemId: allocationForm.inventoryItemId,
         productId: allocationForm.productId,
         salespersonId: allocationForm.salespersonId,
         quantityAllocated: parseFloat(allocationForm.quantityAllocated),
@@ -304,10 +299,8 @@ export const Production = () => {
       });
       setShowAllocationModal(false);
       setAllocationForm({
-        productionId: '',
         productId: '',
         inventoryItemId: '',
-        allocationType: 'production',
         salespersonId: '',
         quantityAllocated: '',
         notes: ''
@@ -686,7 +679,7 @@ export const Production = () => {
                     <td className="p-3 font-medium">{allocation.product_name || allocation.productName || '-'}</td>
                     <td className="p-3">
                       <span className="px-2 py-1 text-xs font-mono bg-blue-100 text-blue-800 rounded">
-                        {allocation.batch_number || allocation.batch || allocation.production_batch || '-'}
+                        {'-'}
                       </span>
                     </td>
                     <td className="p-3 text-right font-semibold">
@@ -1036,120 +1029,62 @@ export const Production = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Allocation Source *
+                    Inventory Stock (Finished Goods) *
                   </label>
+                  <p className="text-xs text-gray-500 mb-2">All allocations are sourced directly from inventory</p>
                   <select
-                    value={allocationForm.allocationType}
+                    value={allocationForm.inventoryItemId}
                     onChange={(e) => {
+                      const item = inventoryItems.find(i => i.id === e.target.value);
+                      if (!item) return;
+                      
+                      // Find matching product by name (case-insensitive, trim whitespace)
+                      const itemName = (item.name || '').trim();
+                      const matchingProduct = products.find(p => 
+                        (p.name || '').trim().toLowerCase() === itemName.toLowerCase()
+                      );
+                      
+                      if (!matchingProduct) {
+                        alert(`Warning: No matching product found for "${itemName}". Please create the product first.`);
+                      }
+                      
                       setAllocationForm({
                         ...allocationForm,
-                        allocationType: e.target.value as 'production' | 'inventory',
-                        productionId: '',
-                        inventoryItemId: '',
-                        productId: ''
+                        inventoryItemId: e.target.value,
+                        productId: matchingProduct?.id || ''
                       });
                     }}
                     className="w-full input-field"
                     required
                   >
-                    <option value="production">From Production Batch</option>
-                    <option value="inventory">From Inventory Stock</option>
-                  </select>
-                </div>
-                
-                {allocationForm.allocationType === 'production' ? (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Production Batch *
-                    </label>
-                    <select
-                      value={allocationForm.productionId}
-                      onChange={(e) => {
-                        const prod = productions.find(p => p.id === e.target.value);
-                        setAllocationForm({
-                          ...allocationForm,
-                          productionId: e.target.value,
-                          productId: prod?.product_id || ''
-                        });
-                      }}
-                      className="w-full input-field"
-                      required
-                    >
-                      <option value="">Select Production</option>
-                      {productions.filter(p => {
-                        const prodDate = new Date(p.date);
-                        const today = new Date();
-                        return prodDate.toDateString() === today.toDateString();
-                      }).map((prod) => {
-                        const todayProd = todayProductionWithAllocations.find(tp => tp.production_id === prod.id);
-                        const remaining = todayProd ? parseFloat(todayProd.remaining_quantity || 0) : parseFloat(prod.quantity_produced || 0);
+                    <option value="">Select Inventory Item</option>
+                    {inventoryItems
+                      .filter(item => {
+                        // Filter for Finished Goods category
+                        const category = (item as any).category_name || (item as any).category || '';
+                        const quantity = parseFloat(
+                          (item as any).current_stock?.toString() || 
+                          (item as any).currentStock?.toString() || 
+                          (item as any).quantity?.toString() || 
+                          '0'
+                        );
+                        return category === 'Finished Goods' && quantity > 0;
+                      })
+                      .map((item) => {
+                        const quantity = parseFloat(
+                          (item as any).current_stock?.toString() || 
+                          (item as any).currentStock?.toString() || 
+                          (item as any).quantity?.toString() || 
+                          '0'
+                        );
                         return (
-                        <option key={prod.id} value={prod.id}>
-                            {prod.product_name || prod.name} - Batch: {prod.batch || prod.date} - Produced: {formatNumber(prod.quantity_produced)} (Remaining: {formatNumber(remaining)})
-                        </option>
+                          <option key={item.id} value={item.id}>
+                            {item.name} - Stock: {formatNumber(quantity)} {item.unit || 'pieces'}
+                          </option>
                         );
                       })}
-                    </select>
-                  </div>
-                ) : (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Inventory Stock (Finished Goods) *
-                    </label>
-                    <select
-                      value={allocationForm.inventoryItemId}
-                      onChange={(e) => {
-                        const item = inventoryItems.find(i => i.id === e.target.value);
-                        if (!item) return;
-                        
-                        // Find matching product by name (case-insensitive, trim whitespace)
-                        const itemName = (item.name || '').trim();
-                        const matchingProduct = products.find(p => 
-                          (p.name || '').trim().toLowerCase() === itemName.toLowerCase()
-                        );
-                        
-                        if (!matchingProduct) {
-                          alert(`Warning: No matching product found for "${itemName}". Please create the product first.`);
-                        }
-                        
-                        setAllocationForm({
-                          ...allocationForm,
-                          inventoryItemId: e.target.value,
-                          productId: matchingProduct?.id || ''
-                        });
-                      }}
-                      className="w-full input-field"
-                      required
-                    >
-                      <option value="">Select Inventory Item</option>
-                      {inventoryItems
-                        .filter(item => {
-                          // Filter for Finished Goods category
-                          const category = (item as any).category_name || (item as any).category || '';
-                          const quantity = parseFloat(
-                            (item as any).current_stock?.toString() || 
-                            (item as any).currentStock?.toString() || 
-                            (item as any).quantity?.toString() || 
-                            '0'
-                          );
-                          return category === 'Finished Goods' && quantity > 0;
-                        })
-                        .map((item) => {
-                          const quantity = parseFloat(
-                            (item as any).current_stock?.toString() || 
-                            (item as any).currentStock?.toString() || 
-                            (item as any).quantity?.toString() || 
-                            '0'
-                          );
-                          return (
-                            <option key={item.id} value={item.id}>
-                              {item.name} - Stock: {formatNumber(quantity)} {item.unit || 'pieces'}
-                            </option>
-                          );
-                        })}
-                    </select>
-                  </div>
-                )}
+                  </select>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Quantity to Allocate *

@@ -220,9 +220,18 @@ export const Expenses = () => {
                     <td className="p-4">{expense.description || '-'}</td>
                     {!isSalesperson && (
                       <td className="p-4">
-                        <span className="text-sm text-gray-600">
-                          {expense.salespersonName || expense.salespersonUsername || 'Admin'}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-900 font-medium">
+                            {expense.salespersonName || expense.salespersonUsername || 'Admin'}
+                          </span>
+                          <span className={`text-xs mt-1 px-2 py-0.5 rounded-full inline-block w-fit ${
+                            expense.createdByRole === 'ADMIN' 
+                              ? 'bg-purple-100 text-purple-700' 
+                              : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {expense.createdByRole === 'ADMIN' ? 'Admin' : 'Salesperson'}
+                          </span>
+                        </div>
                       </td>
                     )}
                     <td className="p-4 text-right font-semibold text-red-600">
@@ -296,9 +305,18 @@ export const Expenses = () => {
                       <p className="text-sm text-gray-600 mt-2">{expense.description}</p>
                     )}
                     {!isSalesperson && (
-                      <p className="text-xs text-gray-500 mt-2">
-                        Salesperson: {expense.salespersonName || expense.salespersonUsername || 'Admin'}
-                      </p>
+                      <div className="mt-2">
+                        <p className="text-xs text-gray-500">
+                          {expense.salespersonName || expense.salespersonUsername || 'Admin'}
+                        </p>
+                        <span className={`text-xs mt-1 px-2 py-0.5 rounded-full inline-block ${
+                          expense.createdByRole === 'ADMIN' 
+                            ? 'bg-purple-100 text-purple-700' 
+                            : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {expense.createdByRole === 'ADMIN' ? 'Admin' : 'Salesperson'}
+                        </span>
+                      </div>
                     )}
                   </div>
                   <div className="text-right">

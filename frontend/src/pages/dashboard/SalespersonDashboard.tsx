@@ -656,7 +656,7 @@ export const SalespersonDashboard = () => {
       const items: ShopItem[] = inventory.map(item => {
         const existingData = salesDataMap.get(item.id);
         const maxQuantity = item.stock || 0; // Maximum available quantity
-        const quantity = maxQuantity; // Default to maximum available quantity
+        const quantity = 0; // Default to 0, salesperson can enter manually
         const inventoryPrice = item.price || 0; // Original inventory price
         const pricePerUnit = existingData?.pricePerUnit || item.price || 0;
         
@@ -1076,11 +1076,11 @@ export const SalespersonDashboard = () => {
       setShopItems([...shopItems, {
         productId: productToAdd.id,
         productName: productToAdd.name,
-        quantity: 1,
+        quantity: 0,
         maxQuantity: 999,
         pricePerUnit: productToAdd.price,
         inventoryPrice: productToAdd.price,
-        totalPrice: productToAdd.price,
+        totalPrice: 0,
         returns: 0,
         freeItems: 0
       }]);
@@ -1290,23 +1290,23 @@ export const SalespersonDashboard = () => {
           const hasNext = currentPaymentIndex < filteredPayments.length - 1;
 
           return (
-            <div className="p-3 sm:p-4">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
-                  <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-500" />
+            <div className="p-2 sm:p-4">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-orange-500" />
                     Ongoing Pending Payments
                   </h2>
                   {cities.length > 0 && (
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                      <label className="text-xs sm:text-sm font-semibold text-gray-700 whitespace-nowrap flex items-center">Filter by City:</label>
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Filter by City:</label>
                 <select
                         value={selectedCity}
                         onChange={(e) => {
                           setSelectedCity(e.target.value);
                           setCurrentPaymentIndex(0); // Reset to first payment when city changes
                         }}
-                        className="px-3 sm:px-4 py-2.5 sm:py-2 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base font-medium touch-manipulation min-h-[44px] bg-white"
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
                 >
                         <option value="">All Cities</option>
                         {cities.map(city => (
@@ -1318,43 +1318,41 @@ export const SalespersonDashboard = () => {
                 </div>
 
                 {currentPayment ? (
-                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-200 rounded-xl p-4 sm:p-5">
-                    <div className="flex flex-col gap-4 sm:gap-5">
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                    <div className="flex flex-col gap-4">
                       {/* Shop Info */}
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                          <div className="p-1.5 sm:p-2 bg-orange-200 rounded-lg">
-                            <Store className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
-                          </div>
-                          <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Store className="w-5 h-5 text-orange-600" />
+                          <h3 className="text-lg font-semibold text-gray-900">
                             {currentPayment.shopName || 'Unknown Shop'}
                           </h3>
                         </div>
                         {currentPayment.address && (
-                          <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 break-words">{currentPayment.address}</p>
+                          <p className="text-sm text-gray-600 mb-3">{currentPayment.address}</p>
                         )}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                          <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200">
-                            <span className="text-xs text-gray-500 block mb-1">Date:</span>
-                            <div className="font-semibold text-sm sm:text-base text-gray-900">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                          <div>
+                            <span className="text-gray-500">Date:</span>
+                            <div className="font-medium text-gray-900">
                               {new Date(currentPayment.saleDate).toLocaleDateString()}
                             </div>
                           </div>
-                          <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200">
-                            <span className="text-xs text-gray-500 block mb-1">Total:</span>
-                            <div className="font-bold text-sm sm:text-base text-gray-900">
+                          <div>
+                            <span className="text-gray-500">Total:</span>
+                            <div className="font-semibold text-gray-900">
                               {formatCurrencySimple(currentPayment.totalAmount)}
                             </div>
                           </div>
-                          <div className="bg-white rounded-lg p-2 sm:p-3 border border-gray-200">
-                            <span className="text-xs text-gray-500 block mb-1">Paid:</span>
-                            <div className="font-bold text-sm sm:text-base text-gray-900">
+                          <div>
+                            <span className="text-gray-500">Paid:</span>
+                            <div className="font-semibold text-gray-900">
                               {formatCurrencySimple(currentPayment.totalPaid)}
                             </div>
                           </div>
-                          <div className="bg-white rounded-lg p-2 sm:p-3 border-2 border-orange-300">
-                            <span className="text-xs text-gray-500 block mb-1">Remaining:</span>
-                            <div className="font-bold text-sm sm:text-base text-orange-600">
+                          <div>
+                            <span className="text-gray-500">Remaining:</span>
+                            <div className="font-semibold text-orange-600">
                               {formatCurrencySimple(currentPayment.remainingBalance)}
                             </div>
                           </div>
@@ -1362,33 +1360,33 @@ export const SalespersonDashboard = () => {
             </div>
 
                       {/* Navigation and Action Buttons */}
-                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-4 border-t-2 border-orange-200">
+                      <div className="flex items-center justify-between gap-4 pt-3 border-t border-orange-200">
                         {/* Navigation Arrows */}
-                        <div className="flex items-center justify-center gap-3 sm:gap-2">
+                        <div className="flex items-center gap-2">
                   <button
                             onClick={() => setCurrentPaymentIndex(prev => Math.max(0, prev - 1))}
                             disabled={!hasPrev}
-                            className={`p-2.5 sm:p-2 rounded-xl transition-all duration-200 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                            className={`p-2 rounded-lg transition-colors ${
                               hasPrev
-                                ? 'bg-white border-2 border-gray-300 hover:bg-gray-50 active:bg-gray-100 text-gray-700 shadow-sm hover:shadow-md'
+                                ? 'bg-white border border-gray-300 hover:bg-gray-50 text-gray-700'
                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
                   >
-                            <ChevronLeft className="w-5 h-5 sm:w-4 sm:h-4" />
+                            <ChevronLeft className="w-5 h-5" />
                   </button>
-                          <span className="text-sm sm:text-base font-semibold text-gray-700 min-w-[80px] text-center bg-white px-3 py-2 rounded-lg border border-gray-200">
+                          <span className="text-sm text-gray-600 min-w-[80px] text-center">
                             {currentPaymentIndex + 1} / {filteredPayments.length}
                           </span>
                           <button
                             onClick={() => setCurrentPaymentIndex(prev => Math.min(filteredPayments.length - 1, prev + 1))}
                             disabled={!hasNext}
-                            className={`p-2.5 sm:p-2 rounded-xl transition-all duration-200 touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center ${
+                            className={`p-2 rounded-lg transition-colors ${
                               hasNext
-                                ? 'bg-white border-2 border-gray-300 hover:bg-gray-50 active:bg-gray-100 text-gray-700 shadow-sm hover:shadow-md'
+                                ? 'bg-white border border-gray-300 hover:bg-gray-50 text-gray-700'
                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
                           >
-                            <ChevronRight className="w-5 h-5 sm:w-4 sm:h-4" />
+                            <ChevronRight className="w-5 h-5" />
                           </button>
                           </div>
 
@@ -1412,9 +1410,9 @@ export const SalespersonDashboard = () => {
                             }
                           }}
                           disabled={loadingSaleDetails}
-                          className="px-5 sm:px-4 py-3 sm:py-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg hover:shadow-xl active:scale-95 touch-manipulation min-h-[48px] text-base sm:text-sm"
+                          className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
                             >
-                          <DollarSign className="w-5 h-5 sm:w-4 sm:h-4" />
+                          <DollarSign className="w-4 h-4" />
                           {loadingSaleDetails ? 'Loading...' : 'Settle Payment'}
                             </button>
                           </div>
@@ -1431,17 +1429,17 @@ export const SalespersonDashboard = () => {
         })()}
 
         {/* Shop List Section */}
-        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+        <div className="p-2 sm:p-4 space-y-3 sm:space-y-4">
           {/* Shop Search */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
             <div className="relative">
-              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 value={shopSearchQuery}
                 onChange={(e) => setShopSearchQuery(e.target.value)}
                 placeholder="Search shops by name or city..."
-                className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
               />
                     </div>
                   </div>
@@ -1514,7 +1512,7 @@ export const SalespersonDashboard = () => {
       {/* Add Shop Modal */}
       {showShopModal && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-0 sm:p-4"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowShopModal(false);
@@ -1524,7 +1522,7 @@ export const SalespersonDashboard = () => {
           }}
         >
           <div 
-            className="bg-white rounded-t-2xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-md h-full sm:h-auto sm:max-h-[95vh] overflow-y-auto shadow-2xl mx-0 sm:mx-4 flex flex-col"
+            className="bg-white rounded-xl p-4 sm:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -1696,7 +1694,7 @@ export const SalespersonDashboard = () => {
       {/* Shop Details Modal */}
       {showShopDetailsModal && selectedShop && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-0 sm:p-4"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowShopDetailsModal(false);
@@ -1705,29 +1703,29 @@ export const SalespersonDashboard = () => {
             }
           }}
         >
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-4xl w-full h-full sm:h-auto sm:max-h-[95vh] overflow-y-auto flex flex-col">
-            <div className="p-4 sm:p-6 border-b-2 border-gray-200 sticky top-0 bg-white z-10 flex-shrink-0">
-              <div className="flex justify-between items-start gap-3">
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 break-words">{selectedShop.shopName}</h2>
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto mx-2 sm:mx-0">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1 min-w-0 pr-2">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">{selectedShop.shopName}</h2>
                   {selectedShop.address && (
                     <p className="text-xs sm:text-sm text-gray-600 mt-1 break-words">{selectedShop.address}</p>
-                  )}
-                </div>
+      )}
+    </div>
                 <button
                   onClick={() => {
                     setShowShopDetailsModal(false);
                     setShowPaymentSection(false);
                     // Don't clear shopItems - they're saved in savedShopItems
                   }}
-                  className="text-gray-400 hover:text-gray-600 p-2 touch-manipulation flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 p-2 -mt-2 -mr-2 touch-manipulation flex-shrink-0"
                 >
                   <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
             </div>
             
-            <div className="p-4 sm:p-6 flex-1 overflow-y-auto">
+            <div className="p-4 sm:p-6">
               {loadingShopDetails ? (
                 <div className="text-center py-8">
                   <div className="text-gray-500">Loading shop details...</div>
@@ -1770,51 +1768,43 @@ export const SalespersonDashboard = () => {
                     return null;
                   })()}
                   
-                  {/* Payment Method Selector - Redesigned */}
-                  <div className="mb-5 sm:mb-6">
-                    <label className="block text-sm sm:text-base font-bold text-gray-800 mb-3 uppercase tracking-wide">Payment Method</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-                      {(['cash', 'cheque', 'split', 'ongoing'] as const).map((method) => (
-                        <button
-                          key={method}
-                          onClick={() => setPaymentMethod(method)}
-                          className={`px-4 py-3 sm:py-2.5 rounded-xl font-semibold text-sm sm:text-base transition-all duration-200 touch-manipulation min-h-[52px] sm:min-h-[48px] border-2 shadow-sm ${
-                            paymentMethod === method
-                              ? 'bg-primary-600 text-white border-primary-700 shadow-lg scale-105'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-primary-400'
-                          }`}
-                        >
-                          {method === 'cash' ? 'Cash' : method === 'cheque' ? 'Cheque' : method === 'split' ? 'Split' : 'Ongoing'}
-                        </button>
-                      ))}
-                    </div>
+                  {/* Payment Method Selector */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method:</label>
+                    <select
+                      value={paymentMethod}
+                      onChange={(e) => setPaymentMethod(e.target.value as 'cash' | 'cheque' | 'split' | 'ongoing')}
+                      className="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    >
+                      <option value="cash">Cash</option>
+                      <option value="cheque">Cheque</option>
+                      <option value="split">Cash + Cheque</option>
+                      <option value="ongoing">Ongoing</option>
+                    </select>
                   </div>
                   
                   {/* Payment Details Fields */}
                   <div className="mb-6 space-y-4">
                     {(paymentMethod === 'cash' || paymentMethod === 'split' || paymentMethod === 'ongoing') && (
                       <div>
-                        <label className="block text-sm sm:text-base font-bold text-gray-800 mb-2 uppercase tracking-wide">
-                          Cash Amount {paymentMethod === 'ongoing' ? <span className="text-gray-500 normal-case">(can be 0)</span> : <span className="text-red-600">*</span>}
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Cash Amount {paymentMethod === 'ongoing' ? '(can be 0)' : '*'}
                         </label>
-                        <div className="relative">
-                          <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold text-lg">Rs.</span>
-                          <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            value={cashAmount || ''}
-                            onChange={(e) => {
-                              const val = e.target.value === '' ? 0 : parseFloat(e.target.value);
-                              if (!isNaN(val) && val >= 0) {
-                                setCashAmount(val);
-                              }
-                            }}
-                            onFocus={(e) => e.target.select()}
-                            className="w-full pl-12 pr-4 py-4 sm:py-3 border-2 border-primary-300 rounded-xl focus:ring-4 focus:ring-primary-200 focus:border-primary-500 text-lg sm:text-base touch-manipulation min-h-[56px] sm:min-h-[52px] bg-white font-bold shadow-sm"
-                            placeholder={paymentMethod === 'ongoing' ? "0.00 or more" : "Enter amount"}
-                          />
-                        </div>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={cashAmount || ''}
+                          onChange={(e) => {
+                            const val = e.target.value === '' ? 0 : parseFloat(e.target.value);
+                            if (!isNaN(val) && val >= 0) {
+                              setCashAmount(val);
+                            }
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
+                          placeholder={paymentMethod === 'ongoing' ? "Enter cash amount (0 or more)" : "Enter cash amount"}
+                        />
                         {paymentMethod === 'ongoing' && (
                           <p className="text-xs text-gray-500 mt-1">Ongoing payments are always cash. Enter 0 to mark as ongoing with no payment, or enter an amount for partial settlement.</p>
                         )}
@@ -1824,7 +1814,7 @@ export const SalespersonDashboard = () => {
                     {(paymentMethod === 'cheque' || paymentMethod === 'split') && (
                       <>
                         <div>
-                          <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Cheque Amount *</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Cheque Amount *</label>
                           <input
                             type="number"
                             step="0.01"
@@ -1837,41 +1827,41 @@ export const SalespersonDashboard = () => {
                               }
                             }}
                             onFocus={(e) => e.target.select()}
-                            className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
+                            className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
                             placeholder="Enter cheque amount"
                           />
                         </div>
                         {chequeAmount > 0 && (
                           <>
                             <div>
-                              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Cheque Number *</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Cheque Number *</label>
                               <input
                                 type="text"
                                 value={chequeNumber}
                                 onChange={(e) => setChequeNumber(e.target.value)}
                                 onFocus={(e) => e.target.select()}
-                                className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
+                                className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
                                 placeholder="Enter cheque number"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Bank Name</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Bank Name</label>
                               <input
                                 type="text"
                                 value={chequeBank}
                                 onChange={(e) => setChequeBank(e.target.value)}
                                 onFocus={(e) => e.target.select()}
-                                className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
+                                className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
                                 placeholder="Enter bank name (optional)"
                               />
                             </div>
                             <div>
-                              <label className="block text-sm sm:text-base font-semibold text-gray-700 mb-2">Cheque Expiry Date *</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Cheque Expiry Date *</label>
                               <input
                                 type="date"
                                 value={chequeExpiryDate}
                                 onChange={(e) => setChequeExpiryDate(e.target.value)}
-                                className="w-full px-4 py-3.5 sm:py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-base sm:text-sm touch-manipulation min-h-[48px] bg-white font-medium"
+                                className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-base sm:text-sm touch-manipulation"
                               />
                             </div>
                           </>
@@ -1880,103 +1870,62 @@ export const SalespersonDashboard = () => {
                     )}
                   </div>
                   
-                  {/* Mobile Payment Items List */}
-                  <div className="sm:hidden space-y-3 mb-4">
-                    {shopItems.filter(item => item.quantity > 0).map((item) => (
-                      <div key={item.productId} className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 shadow-md">
-                        <div className="flex justify-between items-start mb-2">
-                          <h5 className="font-bold text-gray-900 text-base flex-1">{item.productName}</h5>
-                          <span className="text-lg font-bold text-primary-600 ml-3">
-                            {formatCurrencySimple((item.quantity || 0) * (item.pricePerUnit || 0))}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div>
-                            <span className="text-gray-500">Qty:</span>
-                            <span className="font-semibold text-gray-900 ml-1">{item.quantity}</span>
-                            {(item.freeItems || 0) > 0 && (
-                              <span className="ml-2 text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-lg">Free: {item.freeItems}</span>
-                            )}
-                            {(item.returns || 0) > 0 && (
-                              <span className="ml-2 text-xs font-semibold text-red-700 bg-red-100 px-2 py-0.5 rounded-lg">Return: {item.returns}</span>
-                            )}
-                          </div>
-                          <div className="text-right">
-                            <span className="text-gray-500">Price:</span>
-                            <span className="font-semibold text-gray-900 ml-1">{formatCurrencySimple(item.pricePerUnit || 0)}</span>
-                          </div>
-                        </div>
-                        <div className="mt-2 pt-2 border-t border-gray-200">
-                          <span className="text-xs font-medium text-gray-600">Payment: </span>
-                          <span className="text-xs font-semibold text-primary-700 bg-primary-100 px-2 py-1 rounded-lg">
-                            {paymentMethod === 'cash' ? 'Cash' : paymentMethod === 'cheque' ? 'Cheque' : paymentMethod === 'split' ? 'Cash + Cheque' : 'Ongoing'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                    {/* Mobile Subtotal */}
-                    <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-4 shadow-lg border-2 border-primary-700">
-                      <div className="flex justify-between items-center">
-                        <span className="text-base font-bold text-white uppercase tracking-wide">Subtotal</span>
-                        <span className="text-2xl font-bold text-white">{formatCurrencySimple(calculateSubtotal())}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Desktop Table View */}
-                  <div className="hidden sm:block overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
-                    <table className="w-full min-w-[640px] sm:min-w-0">
-                      <thead className="bg-gradient-to-r from-primary-500 to-primary-600 border-b-2 border-primary-700">
-                        <tr>
-                          <th className="px-4 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Item Name</th>
-                          <th className="px-4 py-4 text-right text-xs font-bold text-white uppercase tracking-wider">Quantity</th>
-                          <th className="px-4 py-4 text-right text-xs font-bold text-white uppercase tracking-wider">Price/Unit</th>
-                          <th className="px-4 py-4 text-right text-xs font-bold text-white uppercase tracking-wider">Total Price</th>
-                          <th className="px-4 py-4 text-center text-xs font-bold text-white uppercase tracking-wider">Payment Method</th>
-                        </tr>
-                      </thead>
+                  <table className="w-full min-w-[640px] sm:min-w-0">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Item Name</th>
+                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">Price/Unit</th>
+                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Total Price</th>
+                        <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">Payment Method</th>
+                      </tr>
+                    </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {shopItems.filter(item => item.quantity > 0).map((item) => (
-                        <tr key={item.productId} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-4 py-3 text-sm font-semibold text-gray-900">{item.productName}</td>
-                          <td className="px-4 py-3 text-sm text-gray-700 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <span className="font-semibold">{item.quantity}</span>
+                        <tr key={item.productId} className="hover:bg-gray-50">
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-900">{item.productName}</td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <span>{item.quantity}</span>
                               {(item.freeItems || 0) > 0 && (
-                                <span className="text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-lg">Free-{item.freeItems}</span>
+                                <span className="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded">Free-{item.freeItems}</span>
                               )}
                               {(item.returns || 0) > 0 && (
-                                <span className="text-xs font-medium text-red-700 bg-red-100 px-2 py-1 rounded-lg">Return-{item.returns}</span>
+                                <span className="text-xs font-medium text-red-600 bg-red-50 px-1.5 py-0.5 rounded">Return-{item.returns}</span>
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-sm font-medium text-gray-700 text-right">{formatCurrencySimple(item.pricePerUnit || 0)}</td>
-                          <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">{formatCurrencySimple((item.quantity || 0) * (item.pricePerUnit || 0))}</td>
-                          <td className="px-4 py-3 text-sm text-center">
-                            <span className="inline-block px-3 py-1 rounded-lg font-semibold text-xs bg-primary-100 text-primary-700">
-                              {paymentMethod === 'cash' ? 'Cash' : paymentMethod === 'cheque' ? 'Cheque' : paymentMethod === 'split' ? 'Cash + Cheque' : 'Ongoing'}
-                            </span>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 text-right hidden sm:table-cell">{formatCurrencySimple(item.pricePerUnit || 0)}</td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 text-right">
+                            <div className="flex flex-col items-end">
+                              <span className="text-xs text-gray-500 sm:hidden">
+                                {formatCurrencySimple(item.pricePerUnit || 0)} × {item.quantity}
+                              </span>
+                              <span>{formatCurrencySimple((item.quantity || 0) * (item.pricePerUnit || 0))}</span>
+                            </div>
+                          </td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-600 hidden md:table-cell">
+                            {paymentMethod === 'cash' ? 'Cash' : paymentMethod === 'cheque' ? 'Cheque' : paymentMethod === 'split' ? 'Cash + Cheque' : 'Ongoing'}
                           </td>
                         </tr>
                       ))}
-                      <tr className="bg-gradient-to-r from-gray-100 to-gray-200 font-bold border-t-2 border-gray-300">
-                        <td colSpan={3} className="px-4 py-4 text-sm text-gray-900">Subtotal</td>
-                        <td className="px-4 py-4 text-lg text-gray-900 text-right">{formatCurrencySimple(calculateSubtotal())}</td>
-                        <td className="px-4 py-4"></td>
+                      <tr className="bg-gray-50 font-semibold">
+                        <td colSpan={3} className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-900">Subtotal</td>
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-gray-900 text-right">{formatCurrencySimple(calculateSubtotal())}</td>
+                        <td className="px-2 sm:px-4 py-2 sm:py-3 hidden md:table-cell"></td>
                       </tr>
                     </tbody>
                   </table>
-                  </div>
                   
-                  {/* Process Payment Button - Enhanced */}
-                  <div className="mt-5 sm:mt-6 flex justify-end">
+                  {/* Process Payment Button */}
+                  <div className="mt-4 sm:mt-6 flex justify-end">
                     <button
                       onClick={handleProcessPayment}
                       disabled={processingPayment}
-                      className="flex items-center gap-3 px-8 sm:px-10 py-4 sm:py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl hover:from-primary-700 hover:to-primary-800 active:from-primary-800 active:to-primary-900 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 font-bold text-lg sm:text-xl touch-manipulation min-h-[60px] sm:min-h-[56px] w-full sm:w-auto justify-center shadow-xl hover:shadow-2xl active:scale-95 border-2 border-primary-800"
+                      className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium text-sm sm:text-base touch-manipulation min-h-[44px] sm:min-h-0 w-full sm:w-auto justify-center sm:justify-start"
                     >
-                      <CreditCard className="w-6 h-6 sm:w-7 sm:h-7" />
-                      {processingPayment ? 'Processing Payment...' : 'Process Payment'}
+                      <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+                      {processingPayment ? 'Processing...' : 'Process Payment'}
                     </button>
                   </div>
                 </div>
@@ -2006,83 +1955,79 @@ export const SalespersonDashboard = () => {
                     return null;
                   })()}
                   
-                  {/* Mobile Card View - Redesigned */}
-                  <div className="sm:hidden space-y-4">
+                  {/* Mobile Card View */}
+                  <div className="sm:hidden space-y-3">
                     {shopItems.map((item) => (
-                      <div key={item.productId} className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-200">
-                        {/* Product Header */}
-                        <div className="flex justify-between items-start mb-4 pb-3 border-b-2 border-gray-200">
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-gray-900 text-base mb-1 truncate">{item.productName}</h4>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-0.5 rounded-lg">
-                                Stock: {item.maxQuantity || 0}
-                              </span>
-                              {(item.returns || 0) > 0 && (
-                                <span className="text-xs font-semibold text-red-700 bg-red-100 px-2 py-0.5 rounded-lg">
-                                  Return: {item.returns}
-                                </span>
-                              )}
-                              {(item.freeItems || 0) > 0 && (
-                                <span className="text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-lg">
-                                  Free: {item.freeItems}
-                                </span>
-                              )}
-                            </div>
+                      <div key={item.productId} className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <h4 className="font-semibold text-gray-900 text-sm">{item.productName}</h4>
+                            <p className="text-xs text-gray-500">Stock: {item.maxQuantity || 0}</p>
                           </div>
-                          <div className="text-right ml-3">
-                            <p className="text-xs text-gray-500 mb-1">Total</p>
-                            <span className="text-lg font-bold text-primary-600">
-                              {formatCurrencySimple((item.quantity || 0) * (item.pricePerUnit || 0))}
-                            </span>
-                          </div>
+                          <span className="text-sm font-bold text-primary-600">
+                            {formatCurrencySimple((item.quantity || 0) * (item.pricePerUnit || 0))}
+                          </span>
                         </div>
                         
-                        {/* Quantity & Price Row - Enhanced */}
-                        <div className="grid grid-cols-2 gap-3 mb-4">
-                          <div className="space-y-2">
-                            <label className="text-xs font-bold text-gray-700 uppercase tracking-wide block">Quantity</label>
+                        {/* Quantity Row */}
+                        <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100">
+                          <span className="text-xs text-gray-600 font-medium">Quantity</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => updateItemQuantity(item.productId, -1)}
+                              className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center touch-manipulation active:bg-gray-200"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
                             <input
                               type="number"
                               step="1"
                               min="0"
                               max={item.maxQuantity || 0}
-                              value={item.quantity || ''}
+                              value={item.quantity ?? 0}
                               onChange={(e) => {
                                 const val = e.target.value === '' ? 0 : parseInt(e.target.value);
-                                if (!isNaN(val) && val >= 0 && val <= (item.maxQuantity || 0)) {
+                                if (!isNaN(val) && val >= 0) {
                                   updateItemQuantityDirect(item.productId, val);
                                 }
                               }}
                               onFocus={(e) => e.target.select()}
-                              className="w-full px-4 py-3.5 text-center border-2 border-primary-300 rounded-xl text-lg font-bold touch-manipulation min-h-[52px] bg-white focus:ring-4 focus:ring-primary-200 focus:border-primary-500 shadow-sm"
+                              className="w-16 h-8 text-center border border-gray-300 rounded-lg text-sm font-medium touch-manipulation"
                               placeholder="0"
                             />
-                            <p className="text-xs text-gray-500 text-center font-medium">Max: {item.maxQuantity || 0}</p>
-                          </div>
-                          <div className="space-y-2">
-                            <label className="text-xs font-bold text-gray-700 uppercase tracking-wide block">Price/Unit</label>
-                            <div className="relative">
-                              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold">Rs.</span>
-                              <input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                value={item.pricePerUnit || ''}
-                                onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
-                                onFocus={(e) => e.target.select()}
-                                className="w-full pl-10 pr-4 py-3.5 text-right border-2 border-primary-300 rounded-xl text-lg font-bold touch-manipulation min-h-[52px] bg-white focus:ring-4 focus:ring-primary-200 focus:border-primary-500 shadow-sm"
-                                placeholder="0.00"
-                              />
-                            </div>
-                            <p className="text-xs text-gray-500 text-right font-medium">Per unit</p>
+                            <button
+                              onClick={() => updateItemQuantity(item.productId, 1)}
+                              disabled={item.quantity >= (item.maxQuantity || 0)}
+                              className={`w-8 h-8 rounded-full flex items-center justify-center touch-manipulation ${
+                                item.quantity >= (item.maxQuantity || 0)
+                                  ? 'bg-gray-100 opacity-50'
+                                  : 'bg-primary-100 text-primary-600 active:bg-primary-200'
+                              }`}
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
                         
-                        {/* Returns & Free Issue Row - Enhanced */}
-                        <div className="grid grid-cols-2 gap-3 pt-3 border-t-2 border-gray-200">
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold text-gray-700 block">Returns</label>
+                        {/* Price Row */}
+                        <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100">
+                          <span className="text-xs text-gray-600 font-medium">Price/Unit</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={item.pricePerUnit || ''}
+                            onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
+                            onFocus={(e) => e.target.select()}
+                            className="w-24 h-8 text-right border border-gray-300 rounded-lg text-sm px-2 touch-manipulation"
+                            placeholder="Price"
+                          />
+                        </div>
+                        
+                        {/* Returns & Free Issue Row */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <span className="text-xs text-gray-600 font-medium block mb-1">Returns</span>
                             <input
                               type="number"
                               step="1"
@@ -2090,12 +2035,12 @@ export const SalespersonDashboard = () => {
                               value={item.returns || ''}
                               onChange={(e) => updateItemReturn(item.productId, parseInt(e.target.value) || 0)}
                               onFocus={(e) => e.target.select()}
-                              className="w-full px-3 py-2.5 text-center border-2 border-gray-300 rounded-xl text-base font-semibold touch-manipulation min-h-[44px] bg-white focus:ring-2 focus:ring-red-200 focus:border-red-400"
+                              className="w-full h-8 text-center border border-gray-300 rounded-lg text-sm touch-manipulation"
                               placeholder="0"
                             />
                           </div>
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold text-gray-700 block">Free Issue</label>
+                          <div>
+                            <span className="text-xs text-gray-600 font-medium block mb-1">Free Issue</span>
                             <input
                               type="number"
                               step="1"
@@ -2104,7 +2049,7 @@ export const SalespersonDashboard = () => {
                               value={item.freeItems || ''}
                               onChange={(e) => updateItemFreeQuantity(item.productId, parseInt(e.target.value) || 0)}
                               onFocus={(e) => e.target.select()}
-                              className="w-full px-3 py-2.5 text-center border-2 border-gray-300 rounded-xl text-base font-semibold touch-manipulation min-h-[44px] bg-white focus:ring-2 focus:ring-green-200 focus:border-green-400"
+                              className="w-full h-8 text-center border border-gray-300 rounded-lg text-sm touch-manipulation"
                               placeholder="0"
                             />
                           </div>
@@ -2112,23 +2057,22 @@ export const SalespersonDashboard = () => {
                       </div>
                     ))}
                     
-                    {/* Mobile Subtotal - Enhanced */}
-                    <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-4 shadow-xl sticky bottom-0 border-2 border-primary-700">
-                      <div className="flex justify-between items-center">
-                        <span className="text-base font-bold text-white uppercase tracking-wide">Subtotal</span>
-                        <span className="text-2xl font-bold text-white">{formatCurrencySimple(calculateSubtotal())}</span>
-                      </div>
+                    {/* Mobile Subtotal */}
+                    <div className="bg-primary-50 border border-primary-200 rounded-lg p-3 flex justify-between items-center">
+                      <span className="font-semibold text-gray-900">Subtotal</span>
+                      <span className="text-lg font-bold text-primary-600">{formatCurrencySimple(calculateSubtotal())}</span>
                     </div>
                   </div>
                   
                   {/* Desktop Table View */}
                   <table className="w-full hidden sm:table">
-                    <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                    <thead className="bg-gray-50 border-b border-gray-200">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Item Name</th>
-                        <th className="px-4 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Qty / Price</th>
-                        <th className="px-4 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Total Price</th>
-                        <th className="px-4 py-3 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">Returns</th>
+                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Item Name</th>
+                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Quantity</th>
+                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Price/Unit</th>
+                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Total Price</th>
+                        <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Returns</th>
                         <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Free Issue</th>
                       </tr>
                     </thead>
@@ -2136,36 +2080,54 @@ export const SalespersonDashboard = () => {
                       {shopItems.map((item) => (
                         <tr key={item.productId} className="hover:bg-gray-50">
                           <td className="px-4 py-3 text-sm text-gray-900">{item.productName}</td>
-                          <td className="px-4 py-3">
-                            <div className="grid grid-cols-2 gap-2">
+                          <td className="px-4 py-3 text-sm text-gray-600 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => updateItemQuantity(item.productId, -1)}
+                                className="p-1 rounded hover:bg-gray-200 transition-colors touch-manipulation"
+                              >
+                                <Minus className="w-4 h-4" />
+                              </button>
                               <input
                                 type="number"
                                 step="1"
                                 min="0"
                                 max={item.maxQuantity || 0}
-                                value={item.quantity || ''}
+                                value={item.quantity ?? 0}
                                 onChange={(e) => {
                                   const val = e.target.value === '' ? 0 : parseInt(e.target.value);
-                                  if (!isNaN(val) && val >= 0 && val <= (item.maxQuantity || 0)) {
+                                  if (!isNaN(val) && val >= 0) {
                                     updateItemQuantityDirect(item.productId, val);
                                   }
                                 }}
                                 onFocus={(e) => e.target.select()}
-                                className="w-full px-2 py-1.5 text-sm border-2 border-gray-300 rounded-lg text-center focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium"
-                                placeholder="Qty"
-                                title={`Max: ${item.maxQuantity || 0}`}
+                                className="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                placeholder="0"
                               />
-                              <input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                value={item.pricePerUnit || ''}
-                                onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
-                                onFocus={(e) => e.target.select()}
-                                className="w-full px-2 py-1.5 text-sm border-2 border-gray-300 rounded-lg text-right focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium"
-                                placeholder="Price"
-                              />
+                              <button
+                                onClick={() => updateItemQuantity(item.productId, 1)}
+                                disabled={item.quantity >= (item.maxQuantity || 0)}
+                                className={`p-1 rounded transition-colors ${
+                                  item.quantity >= (item.maxQuantity || 0)
+                                    ? 'opacity-50 cursor-not-allowed bg-gray-100'
+                                    : 'hover:bg-gray-200'
+                                }`}
+                              >
+                                <Plus className="w-4 h-4" />
+                              </button>
                             </div>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600 text-right">
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              value={item.pricePerUnit || ''}
+                              onChange={(e) => updateItemPrice(item.productId, parseFloat(e.target.value) || 0)}
+                              onFocus={(e) => e.target.select()}
+                              className="w-24 px-2 py-1 text-sm border border-gray-300 rounded text-right focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                              placeholder="Price"
+                            />
                           </td>
                           <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
                             {formatCurrencySimple((item.quantity || 0) * (item.pricePerUnit || 0))}
@@ -2198,9 +2160,9 @@ export const SalespersonDashboard = () => {
                         </tr>
                       ))}
                       <tr className="bg-gray-50 font-semibold">
-                        <td colSpan={2} className="px-4 py-3 text-sm text-gray-900">Subtotal</td>
+                        <td colSpan={3} className="px-4 py-3 text-sm text-gray-900">Subtotal</td>
                         <td className="px-4 py-3 text-sm text-gray-900 text-right">{formatCurrencySimple(calculateSubtotal())}</td>
-                        <td className="px-4 py-3"></td>
+                        <td colSpan={2} className="px-4 py-3"></td>
                       </tr>
                     </tbody>
                   </table>
@@ -2226,7 +2188,7 @@ export const SalespersonDashboard = () => {
       {/* Settle Payment Modal */}
       {showSettlePaymentModal && selectedSaleForSettlement && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-3 sm:p-4"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
                   onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowSettlePaymentModal(false);
@@ -2235,7 +2197,7 @@ export const SalespersonDashboard = () => {
             }
           }}
         >
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -2481,23 +2443,23 @@ export const SalespersonDashboard = () => {
       {showBillModal && billData && (() => {
         const t = BILL_LABELS[billLang];
         return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-0 sm:p-4">
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-sm h-full sm:h-auto sm:max-h-[95vh] overflow-y-auto shadow-2xl flex flex-col">
-            {/* Action Buttons - Top with system colors - Mobile optimized */}
-            <div className="flex flex-wrap gap-2 p-3 sm:p-4 border-b-2 border-gray-200 bg-gradient-to-r from-primary-50 to-primary-100 print:hidden sticky top-0 z-10 flex-shrink-0">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg w-full max-w-sm max-h-[95vh] overflow-y-auto shadow-xl">
+            {/* Action Buttons - Top with system colors */}
+            <div className="flex gap-2 p-3 border-b border-gray-200 bg-primary-50 print:hidden sticky top-0">
               <button
                 onClick={() => setBillLang(billLang === 'EN' ? 'SI' : 'EN')}
-                className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-700 border-2 border-gray-300 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md"
+                className="btn-secondary px-3 py-2 text-sm"
               >
                 {t.language}
               </button>
               {billData.saleId && (
                 <button
                   onClick={() => setShowReversePasswordModal(true)}
-                  className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-red-600 hover:bg-red-700 active:bg-red-800 text-white border-2 border-red-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md flex items-center justify-center gap-1.5"
+                  className="btn-secondary px-3 py-2 text-sm bg-red-600 hover:bg-red-700 text-white"
                 >
-                  <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Reverse</span>
+                  <AlertTriangle className="w-4 h-4 inline mr-1" />
+                  Reverse
                 </button>
               )}
               <button
@@ -2505,7 +2467,7 @@ export const SalespersonDashboard = () => {
                   setShowBillModal(false);
                   setBillData(null);
                 }}
-                className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-gray-600 hover:bg-gray-700 active:bg-gray-800 text-white border-2 border-gray-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md"
+                className="btn-secondary flex-1 py-2 text-sm"
               >
                 {t.close}
               </button>
@@ -2575,7 +2537,7 @@ export const SalespersonDashboard = () => {
                     }
                   }
                 }}
-                className="flex-1 sm:flex-none px-4 py-3 sm:py-2 text-sm sm:text-base font-semibold bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white border-2 border-primary-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] sm:min-h-0 shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+                className="btn-primary flex-1 py-2 flex items-center justify-center gap-1 text-sm"
               >
                 <Printer className="w-4 h-4" />
                 {t.print}
@@ -2583,8 +2545,7 @@ export const SalespersonDashboard = () => {
             </div>
 
             {/* Print-friendly bill content - 80mm optimized with system colors */}
-            <div className="flex-1 overflow-y-auto p-3 sm:p-4">
-              <div id="printable-bill" className={`p-3 bg-white mx-auto ${billLang === 'SI' ? 'font-sinhala' : ''}`} style={{ maxWidth: '80mm' }}>
+            <div id="printable-bill" className={`p-3 bg-white ${billLang === 'SI' ? 'font-sinhala' : ''}`} style={{ maxWidth: '80mm' }}>
               {/* Header with Logo */}
               <div className="header text-center border-b-2 border-dashed border-primary-500 pb-3 mb-3">
                 <img src={logoImage} alt="Logo" className="logo w-12 h-12 mx-auto mb-1" />
@@ -2762,7 +2723,6 @@ export const SalespersonDashboard = () => {
                   <p className="text-xs text-gray-400 mt-1">© 2026 VOXOsolution All rights reserved</p>
                 </div>
               </div>
-              </div>
             </div>
           </div>
         </div>
@@ -2771,8 +2731,8 @@ export const SalespersonDashboard = () => {
 
       {/* Reverse Password Modal */}
       {showReversePasswordModal && billData && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[110] p-3 sm:p-4">
-          <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full shadow-2xl">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="w-8 h-8 text-red-600" />
               <h2 className="text-xl font-bold text-gray-800">Reverse Bill</h2>
@@ -2815,21 +2775,21 @@ export const SalespersonDashboard = () => {
                 autoFocus
               />
             </div>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="flex gap-3">
               <button
                 onClick={() => {
                   setShowReversePasswordModal(false);
                   setReversePassword('');
                   setReverseReason('');
                 }}
-                className="flex-1 px-4 py-3 sm:py-2.5 text-sm sm:text-base font-semibold bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] shadow-sm hover:shadow-md"
+                className="btn-secondary flex-1 py-2"
                 disabled={reversingSale}
               >
                 Cancel
               </button>
               <button
                 onClick={handleReverseSale}
-                className="flex-1 px-4 py-3 sm:py-2.5 text-sm sm:text-base font-semibold bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary flex-1 py-2 bg-red-600 hover:bg-red-700 text-white"
                 disabled={reversingSale || !reversePassword}
               >
                 {reversingSale ? 'Reversing...' : 'Reverse Bill'}
